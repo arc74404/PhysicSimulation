@@ -31,13 +31,16 @@ main()
     sml::BaseObject bObj;
     // bObj.addBorders({lb3, lb2, lb});
 
-    BaseBorderPtr border_ptr =
+    sml::BaseBorderPtr border_ptr =
         std::make_unique<sml::LinearBorder>(DefScope{10, 10}, 3, 2);
 
-    BaseBorderPtr border_ptr2 =
+    sml::BaseBorderPtr border_ptr2 =
         std::make_unique<sml::LinearBorder>(DefScope{15, 15}, 1, 2);
 
-    bObj.addBorders(border_ptr, border_ptr2);
+    bObj.addBorder(std::move(border_ptr), std::move(border_ptr2));
+
+    std::cout << __cplusplus << '\n';
+    // bObj.addBorder(std::move(border_ptr2));
 
     bObj.printData();
 

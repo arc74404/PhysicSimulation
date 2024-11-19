@@ -2,13 +2,20 @@
 
 #include <iostream>
 
-// bool
-// sml::BaseObject::addBordersImpl(
-//     std::initializer_list<BaseBorderPtr> init_list) noexcept
-// {
-//     m_border_vector.emplace_back(init_list);
-//     return true;
-// }
+bool
+sml::BaseObject::addBorder(BaseBorderPtr&& b)
+{
+    auto size = m_border_vector.size();
+
+    if (size)
+    {
+        // if (m_border_vector. availableForConnecting())
+        // {
+        // }
+    }
+    m_border_vector.emplace_back(std::move(b));
+    return true;
+}
 
 void
 sml::BaseObject::printData() noexcept

@@ -3,14 +3,19 @@
 
 #include <SFML/Graphics.hpp>
 
+#include <concepts>
 #include <cstdarg>
 
 #include "base_border.hpp"
 
-using BaseBorderPtr = std::unique_ptr<sml::BaseBorder>;
-
 namespace sml
 {
+using BaseBorderPtr = std::unique_ptr<sml::BaseBorder>;
+
+template <typename Ptr>
+concept IsMovableBaseBorderPtr =
+    std::movable<Ptr> && std::constructible_from<BaseBorderPtr, Ptr&&>;
+
 class BaseObject
 {
 public:
@@ -24,7 +29,14 @@ public:
 
     void printData() noexcept;
 
-    template <typename... Args> void addBorders(Args&&... args) noexcept;
+    bool addBorder(BaseBorderPtr&& b);
+
+    template <IsMovableBaseBorderPtr... Args> void addBorders(Args&&... args)
+    {
+        (m_border_vector.emplace_back(std::move(args)), ...);
+    }
+
+    // template <IsMovable... Args> void addBorders(Args&&... args);
 
 private:
     std::vector<BaseBorderPtr> m_border_vector;
@@ -32,12 +44,12 @@ private:
     UpdStatus m_upd_status;
 };
 
-template <typename... Args>
-void
-BaseObject::addBorders(Args&&... args) noexcept
-{
-    (m_border_vector.emplace_back(std::move(args)), ...);
-}
+// template <IsMovable... Args>
+// void
+// BaseObject::addBorders(Args&&... args);
+// {
+//     (m_border_vector.emplace_back(std::move(args)), ...);
+// }
 
 } // namespace sml
 #endif // !BASE_OBJECT_HPP
