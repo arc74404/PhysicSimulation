@@ -13,8 +13,7 @@ set(CMAKE_TOOLCHAIN_FILE "${VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake")
 project(my_project)
 
 # Compile options
-set(CMAKE_CXX_STANDARD 20)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
 
 ###############
 #find packages
@@ -25,10 +24,11 @@ include(${CMAKE_CURRENT_SOURCE_DIR}/cmake_scripts/cmake_scripts.cmake)
 include(${CMAKE_CURRENT_SOURCE_DIR}/sources/sources.cmake)
 get_sources(SOURCES_LIST ${CMAKE_CURRENT_SOURCE_DIR})
 
-
+set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 ###############
 
-add_executable(${PROJECT_NAME} ${SOURCES_LIST})
+add_executable(${PROJECT_NAME}  ${SOURCES_LIST})
 
 #target
 target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/sources)

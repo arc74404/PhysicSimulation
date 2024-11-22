@@ -1,10 +1,16 @@
 #ifndef BASE_BORDER_HPP
 #define BASE_BORDER_HPP
 
+#include <SFML/Graphics.hpp>
+
 #include <initializer_list>
+#include <mutex>
 
 namespace sml
 {
+
+using Point = sf::Vector2f;
+
 class BaseBorder
 {
 public:
@@ -12,6 +18,13 @@ public:
     {
         LINEAR  = 0,
         X_CONST = 1
+    };
+    enum class ConnectionWay
+    {
+        END_TO_END   = 0,
+        END_TO_BEGIN = 1,
+        BEGIN_TO_END,
+        BEGIN_TO_BEGIN
     };
 
     struct DefScope
@@ -26,12 +39,32 @@ public:
         float x1;
         float x2;
     };
+    // struct Coordinate
+    // {
+    //     float x;
+    //     float y;
+    // };
 
-    virtual void printData() = 0;
+    virtual void printData() const = 0;
 
-    BaseBorder(bType) noexcept;
+    BaseBorder(bType, DefScope = {0, 0}) noexcept;
+
+    bool canConnect(std::unique_ptr<BaseBorder>& other_border_ptr,
+                    ConnectionWay con_way) const;
+
+    constexpr bType getType() const noexcept;
+
+    Point getEndPoint() const;
+
+    Point getBeginPoint() const;
+
+    DefScope getDefScope() const noexcept;
+
+    virtual float getOrdinate(float x) const noexcept = 0;
 
 private:
+    DefScope m_function_definition_scope;
+
     bType b_type;
 };
 } // namespace sml

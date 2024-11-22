@@ -9,40 +9,17 @@ using DefScope = sml::BaseBorder::DefScope;
 int
 main()
 {
-    // sf::RectangleShape shape({100, 100});
-
-    // sf::RenderWindow window(sf::VideoMode(800, 600), "SFML window");
-
-    // window.setFramerateLimit(60);
-
-    // while (window.isOpen())
-    // {
-    //     window.draw(shape);
-    //     window.display();
-    //     window.clear();
-
-    //     sf::Event event;
-    //     while (window.pollEvent(event))
-    //     {
-    //         if (event.type == sf::Event::Closed) window.close();
-    //     }
-    // }
-
-    sml::BaseObject bObj;
-    // bObj.addBorders({lb3, lb2, lb});
-
-    sml::BaseBorderPtr border_ptr =
-        std::make_unique<sml::LinearBorder>(DefScope{10, 10}, 3, 2);
-
-    sml::BaseBorderPtr border_ptr2 =
-        std::make_unique<sml::LinearBorder>(DefScope{15, 15}, 1, 2);
-
-    bObj.addBorder(std::move(border_ptr), std::move(border_ptr2));
 
     std::cout << __cplusplus << '\n';
-    // bObj.addBorder(std::move(border_ptr2));
 
-    bObj.printData();
+    // sml::LinearBorder linear_b1(DefScope(0, 10), 2, 5);
+
+    // sml::BaseBorderPtr linear_b2 =
+    //     std::make_unique<sml::LinearBorder>(DefScope(0, 10), -1, 35);
+
+    // std::cout << linear_b1.canConnect(
+    //                  linear_b2, sml::BaseBorder::ConnectionWay::BEGIN_TO_END)
+    //           << '\n';
 
     std::cout << "End\n";
 }
