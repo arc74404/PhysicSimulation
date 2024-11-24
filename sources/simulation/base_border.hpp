@@ -14,10 +14,10 @@ using Point = sf::Vector2f;
 class BaseBorder
 {
 public:
-    enum class bType
+    enum class BaseType
     {
-        LINEAR  = 0,
-        X_CONST = 1
+        FUNCTION = 0, // y = kx + b
+        EQUATION = 1  // x = 5
     };
     enum class ConnectionWay
     {
@@ -27,45 +27,25 @@ public:
         BEGIN_TO_BEGIN
     };
 
-    struct DefScope
-    {
-        constexpr DefScope(float xx1, float xx2) noexcept : x1(xx1), x2(xx2)
-        {
-        }
-        constexpr DefScope(std::initializer_list<float> init_list) noexcept
-            : x1(*init_list.begin()), x2(*(init_list.end() - 1))
-        {
-        }
-        float x1;
-        float x2;
-    };
-    // struct Coordinate
-    // {
-    //     float x;
-    //     float y;
-    // };
-
     virtual void printData() const = 0;
 
-    BaseBorder(bType, DefScope = {0, 0}) noexcept;
+    BaseBorder(BaseType) noexcept;
 
-    bool canConnect(std::unique_ptr<BaseBorder>& other_border_ptr,
-                    ConnectionWay con_way) const;
+    virtual bool canConnect(
+        std::unique_ptr<BaseBorder>& other_border_ptr) const noexcept;
 
-    constexpr bType getType() const noexcept;
+    constexpr BaseType getBaseType() const noexcept;
 
-    Point getEndPoint() const;
+    virtual Point getEndPoint() const noexcept = 0;
 
-    Point getBeginPoint() const;
-
-    DefScope getDefScope() const noexcept;
+    virtual Point getBeginPoint() const noexcept = 0;
 
     virtual float getOrdinate(float x) const noexcept = 0;
 
 private:
-    DefScope m_function_definition_scope;
-
-    bType b_type;
+    bool canConnect(std::unique_ptr<BaseBorder>& other_border_ptr,
+                    ConnectionWay con_way) const noexcept;
+    BaseType b_type;
 };
 } // namespace sml
 

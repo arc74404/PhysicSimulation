@@ -9,9 +9,11 @@ sml::BaseObject::addBorder(BaseBorderPtr&& b)
 
     if (size)
     {
-        // if (m_border_vector. availableForConnecting())
-        // {
-        // }
+        auto& last_el = m_border_vector[size - 1];
+        if (!last_el->canConnect(b))
+        {
+            return false;
+        }
     }
     m_border_vector.emplace_back(std::move(b));
     return true;

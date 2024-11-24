@@ -2,7 +2,7 @@
 
 sml::LinearBorder::LinearBorder(DefScope def_scope, float coefficient_K,
                                 float coefficient_B)
-    : BaseBorder(bType::LINEAR, DefScope(def_scope.x1, def_scope.x2)),
+    : BaseFunctionBorder(FunctionType::LINEAR, def_scope),
       m_coefficient_K(coefficient_K), m_coefficient_B(coefficient_B)
 {
 }

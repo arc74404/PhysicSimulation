@@ -5,23 +5,23 @@
 
 #include <iostream>
 
-#include "base_border.hpp"
+#include "base_function_border.hpp"
 
 namespace sml
 {
 
 using BaseBorderPtr = std::unique_ptr<sml::BaseBorder>;
 
-class LinearBorder : public BaseBorder
+class LinearBorder : public BaseFunctionBorder
 {
 public:
     LinearBorder(DefScope def_scope, float coefficient_K = 0,
                  float coefficient_B = 0);
 
-    void printData() const override;
+    virtual void printData() const override;
 
 private:
-    float getOrdinate(float x) const noexcept override;
+    virtual float getOrdinate(float x) const noexcept override;
 
     float m_coefficient_K;
 

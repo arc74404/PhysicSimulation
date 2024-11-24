@@ -1,38 +1,30 @@
 #include "base_border.hpp"
 
-sml::BaseBorder::BaseBorder(bType bt, DefScope def_scope) noexcept
-    : b_type(bt), m_function_definition_scope(def_scope)
+sml::BaseBorder::BaseBorder(BaseType b_t) noexcept : b_type(b_t)
 {
 }
 
-sml::BaseBorder::DefScope
-sml::BaseBorder::getDefScope() const noexcept
-{
-    return m_function_definition_scope;
-}
-
-constexpr sml::BaseBorder::bType
-sml::BaseBorder::getType() const noexcept
+constexpr sml::BaseBorder::BaseType
+sml::BaseBorder::getBaseType() const noexcept
 {
     return b_type;
 }
 
-sml::Point
-sml::BaseBorder::getEndPoint() const
+bool
+sml::BaseBorder::canConnect(
+    std::unique_ptr<sml::BaseBorder>& other_border_ptr) const noexcept
 {
-    return Point({getDefScope().x2, getOrdinate(getDefScope().x2)});
-}
-
-sml::Point
-sml::BaseBorder::getBeginPoint() const
-{
-    return Point({getDefScope().x1, getOrdinate(getDefScope().x1)});
+    return canConnect(other_border_ptr, ConnectionWay::BEGIN_TO_BEGIN) ||
+           canConnect(other_border_ptr, ConnectionWay::BEGIN_TO_END) ||
+           canConnect(other_border_ptr, ConnectionWay::END_TO_BEGIN) ||
+           canConnect(other_border_ptr, ConnectionWay::END_TO_END);
 }
 
 bool
 sml::BaseBorder::canConnect(std::unique_ptr<sml::BaseBorder>& other_border_ptr,
-                            ConnectionWay con_way) const
+                            ConnectionWay con_way) const noexcept
 {
+
     Point other_connect_point;
     Point this_connect_point;
 
