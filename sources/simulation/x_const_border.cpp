@@ -25,11 +25,17 @@ sml::XisConstBorder::getOrdinate(float x) const noexcept
 sml::Point
 sml::XisConstBorder::getEndPoint() const noexcept
 {
-    return Point(m_x, m_y_limit.y2);
+    return Point(m_x, m_y_limit.y_max);
 }
 
 sml::Point
 sml::XisConstBorder::getBeginPoint() const noexcept
 {
-    return Point(m_x, m_y_limit.y1);
+    return Point(m_x, m_y_limit.y_min);
+}
+
+std::vector<sml::Point>
+sml::XisConstBorder::getPoints()
+{
+    return std::vector<sml::Point>({getBeginPoint(), getEndPoint()});
 }

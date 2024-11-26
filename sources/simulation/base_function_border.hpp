@@ -28,18 +28,19 @@ public:
     struct DefScope
     {
         template <typename T>
-        constexpr DefScope(T xx1, T xx2) noexcept
-            : x1(static_cast<float>(xx1)), x2(static_cast<float>(xx2))
+        constexpr DefScope(T xx_min, T xx_max) noexcept
+            : x_min(static_cast<float>(xx_min)),
+              x_max(static_cast<float>(xx_max))
         {
+            if (x_min > x_max) std::swap(x_min, x_max);
         }
         template <typename T>
         constexpr DefScope(std::initializer_list<T> init_list) noexcept
-            : x1(static_cast<float>(*init_list.begin())),
-              x2(static_cast<float>(*(init_list.end() - 1)))
+            : DefScope(*init_list.begin(), *init_list.end())
         {
         }
-        float x1;
-        float x2;
+        float x_min;
+        float x_max;
     };
 
     virtual void printData() const = 0;

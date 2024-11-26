@@ -16,11 +16,11 @@ sml::BaseFunctionBorder::BaseFunctionBorder(FunctionType f_t,
 sml::Point
 sml::BaseFunctionBorder::getEndPoint() const noexcept
 {
-    return Point({getDefScope().x2, getOrdinate(getDefScope().x2)});
+    return Point({getDefScope().x_max, getOrdinate(getDefScope().x_max)});
 }
 
 sml::Point
 sml::BaseFunctionBorder::getBeginPoint() const noexcept
 {
-    return Point({getDefScope().x1, getOrdinate(getDefScope().x1)});
+    return Point({getDefScope().x_min, getOrdinate(getDefScope().x_min)});
 }

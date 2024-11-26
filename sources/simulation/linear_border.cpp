@@ -23,3 +23,9 @@ sml::LinearBorder::getOrdinate(float x) const noexcept
 {
     return m_coefficient_K * x + m_coefficient_B;
 }
+
+std::vector<sml::Point>
+sml::LinearBorder::getPoints()
+{
+    return std::vector<sml::Point>({getBeginPoint(), getEndPoint()});
+}

@@ -22,6 +22,8 @@ public:
 
     EquationType getEquationType();
 
+    bool isClosed();
+
 private:
     bool is_closed;
 

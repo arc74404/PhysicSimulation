@@ -4,6 +4,9 @@ set(
 	base_object.hpp
 	base_object.cpp
 
+	new_form_object.hpp
+	new_form_object.cpp
+
 	field.hpp
 	field.cpp
 

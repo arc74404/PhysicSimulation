@@ -34,6 +34,8 @@ public:
     virtual bool canConnect(
         std::unique_ptr<BaseBorder>& other_border_ptr) const noexcept;
 
+    virtual std::vector<Point> getPoints() = 0;
+
     constexpr BaseType getBaseType() const noexcept;
 
     virtual Point getEndPoint() const noexcept = 0;
@@ -45,6 +47,7 @@ public:
 private:
     bool canConnect(std::unique_ptr<BaseBorder>& other_border_ptr,
                     ConnectionWay con_way) const noexcept;
+
     BaseType b_type;
 };
 } // namespace sml

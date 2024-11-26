@@ -16,6 +16,11 @@ bool
 sml::BaseEquationBorder::canConnect(
     std::unique_ptr<BaseBorder>& other_border_ptr) const noexcept
 {
-    return is_closed ? false
-                     : BaseBorder::canConnect(other_border_ptr);
+    return is_closed ? false : BaseBorder::canConnect(other_border_ptr);
+}
+
+bool
+sml::BaseEquationBorder::isClosed()
+{
+    return is_closed;
 }

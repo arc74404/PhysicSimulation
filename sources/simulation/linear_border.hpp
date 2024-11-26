@@ -20,6 +20,8 @@ public:
 
     virtual void printData() const override;
 
+    std::vector<Point> getPoints() override;
+
 private:
     virtual float getOrdinate(float x) const noexcept override;
 

@@ -11,18 +11,19 @@ public:
     struct YLimit
     {
         template <typename T>
-        constexpr YLimit(T yy1, T yy2) noexcept
-            : y1(static_cast<float>(yy1)), y2(static_cast<float>(yy2))
+        constexpr YLimit(T yy_min, T yy_max) noexcept
+            : y_min(static_cast<float>(yy_min)),
+              y_max(static_cast<float>(yy_max))
         {
+            if (y_min > y_max) std::swap(y_min, y_max);
         }
         template <typename T>
         constexpr YLimit(std::initializer_list<T> init_list) noexcept
-            : y1(static_cast<float>(*init_list.begin())),
-              y2(static_cast<float>(*(init_list.end() - 1)))
+            : YLimit(*init_list.begin(), *init_list.end())
         {
         }
-        float y1;
-        float y2;
+        float y_min;
+        float y_max;
     };
 
     XisConstBorder(float x, YLimit y_def_scope);
@@ -32,6 +33,8 @@ public:
     Point getEndPoint() const noexcept override;
 
     Point getBeginPoint() const noexcept override;
+
+    std::vector<sml::Point> getPoints() override;
 
 private:
     float getOrdinate(float x) const noexcept override;
