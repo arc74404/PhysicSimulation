@@ -28,6 +28,8 @@ sml::BaseObject::fillPointVector()
         m_point_vector.insert(m_point_vector.end(), points.begin() + 1,
                               points.end());
     }
+
+    findMassCenter();
 }
 
 bool

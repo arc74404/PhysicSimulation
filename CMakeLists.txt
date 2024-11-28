@@ -12,9 +12,6 @@ set(CMAKE_TOOLCHAIN_FILE "${VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake")
 
 project(my_project)
 
-# Compile options
-
-
 ###############
 #find packages
 find_package(SFML 2.5.1 COMPONENTS system window graphics audio REQUIRED)
