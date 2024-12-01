@@ -1,4 +1,7 @@
-macro(get_sources SOURCE_LIST DIR)
-    set(FOLDER_NAMES main simulation util)
-    add_sources(${SOURCE_LIST} "${DIR}/sources" "${FOLDER_NAMES}")
-endmacro()
+file(GLOB_RECURSE
+    project_sources
+    ${CMAKE_CURRENT_LIST_DIR}/*.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/*.hpp
+)
+
+target_sources(${EXE_NAME} PRIVATE ${project_sources})
