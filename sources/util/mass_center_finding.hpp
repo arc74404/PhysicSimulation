@@ -10,6 +10,11 @@ using Point = sf::Vector2f;
 
 bool
 isPointInPolygon(const Point& p, const std::vector<Point>& polygon);
+
+Point
+calculateCenterOfMassMonteCarlo(const std::vector<Point>& polygon,
+                                int numSamples);
+
 } // namespace utl
 
 #endif // !MASS_CENTER_FINDING_HPP

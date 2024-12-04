@@ -13,11 +13,12 @@ class BaseEquationBorder : public BaseBorder
 public:
     enum class EquationType
     {
-        XisConst = 0
+        X_IS_CONST = 0,
+        CIRCLE = 1
     };
     BaseEquationBorder(EquationType, bool is_cl) noexcept;
 
-    bool canConnect(
+    std::vector<ConnectionWay> getConnectionWays(
         std::unique_ptr<BaseBorder>& other_border_ptr) const noexcept override;
 
     EquationType getEquationType();

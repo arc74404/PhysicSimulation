@@ -3,7 +3,8 @@
 #include <iostream>
 
 sml::XisConstBorder::XisConstBorder(float x, YLimit y_l)
-    : BaseEquationBorder(EquationType::XisConst, false), m_x(x), m_y_limit(y_l)
+    : BaseEquationBorder(EquationType::X_IS_CONST, false), m_x(x),
+      m_y_limit(y_l)
 {
 }
 

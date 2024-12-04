@@ -12,11 +12,12 @@ sml::BaseEquationBorder::getEquationType()
     return m_equation_type;
 }
 
-bool
-sml::BaseEquationBorder::canConnect(
+std::vector<sml::BaseBorder::ConnectionWay>
+sml::BaseEquationBorder::getConnectionWays(
     std::unique_ptr<BaseBorder>& other_border_ptr) const noexcept
 {
-    return is_closed ? false : BaseBorder::canConnect(other_border_ptr);
+    return is_closed ? std::vector<ConnectionWay>({ConnectionWay::NO_WAY})
+                     : BaseBorder::getConnectionWays(other_border_ptr);
 }
 
 bool

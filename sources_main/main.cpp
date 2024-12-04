@@ -1,28 +1,19 @@
 #include <iostream>
 #include <memory>
 
-#include "simulation/base_object.hpp"
-#include "simulation/linear_border.hpp"
-#include "simulation/x_const_border.hpp"
-
-using DefScope = sml::BaseFunctionBorder::DefScope;
-using YLimit   = sml::XisConstBorder::YLimit;
+#include "simulation/borders/linear_border.hpp"
+#include "simulation/borders/x_const_border.hpp"
+#include "simulation/objects/base_object.hpp"
+#include "simulation/objects/rectangle_object.hpp"
 
 int
 main()
 {
+    // std::cout << __cplusplus << '\n';
 
-    std::cout << __cplusplus << '\n';
+    // sml::RectangleObject rectangle({100.f, 100.f});
 
-    // sml::LinearBorder linear_b1(DefScope(0, 10), 1, 0);
-
-    // sml::BaseBorderPtr linear_b2 =
-    //     std::make_unique<sml::XisConstBorder>(0, YLimit(0, 10));
-
-    // std::cout << linear_b1.canConnect(
-    //                  linear_b2,
-    //                  sml::BaseBorder::ConnectionWay::BEGIN_TO_BEGIN)
-    //           << '\n';
+    // rectangle.printPoints();
 
     std::cout << "End\n";
 }

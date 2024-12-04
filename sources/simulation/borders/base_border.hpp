@@ -13,6 +13,9 @@ using Point = sf::Vector2f;
 
 class BaseBorder
 {
+private:
+    static float m_points_rate;
+
 public:
     enum class BaseType
     {
@@ -24,14 +27,15 @@ public:
         END_TO_END   = 0,
         END_TO_BEGIN = 1,
         BEGIN_TO_END,
-        BEGIN_TO_BEGIN
+        BEGIN_TO_BEGIN,
+        NO_WAY
     };
 
     virtual void printData() const = 0;
 
     BaseBorder(BaseType) noexcept;
 
-    virtual bool canConnect(
+    virtual std::vector<ConnectionWay> getConnectionWays(
         std::unique_ptr<BaseBorder>& other_border_ptr) const noexcept;
 
     virtual std::vector<Point> getPoints() = 0;

@@ -1,6 +1,6 @@
 #include "base_function_border.hpp"
 
-sml::BaseFunctionBorder::DefScope
+sml::DefScope
 sml::BaseFunctionBorder::getDefScope() const noexcept
 {
     return m_function_definition_scope;

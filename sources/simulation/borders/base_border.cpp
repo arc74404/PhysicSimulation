@@ -1,6 +1,9 @@
 #include "base_border.hpp"
 
 #include "base_equation_border.hpp"
+
+float sml::BaseBorder::m_points_rate = 0.5f;
+
 sml::BaseBorder::BaseBorder(BaseType b_t) noexcept : b_type(b_t)
 {
 }
@@ -11,8 +14,8 @@ sml::BaseBorder::getBaseType() const noexcept
     return b_type;
 }
 
-bool
-sml::BaseBorder::canConnect(
+std::vector<sml::BaseBorder::ConnectionWay>
+sml::BaseBorder::getConnectionWays(
     std::unique_ptr<sml::BaseBorder>& other_border_ptr) const noexcept
 {
     if (other_border_ptr->getBaseType() == BaseType::EQUATION)
@@ -20,13 +23,23 @@ sml::BaseBorder::canConnect(
         if (static_cast<BaseEquationBorder*>(other_border_ptr.get())
                 ->isClosed())
         {
-            return false;
+            return {ConnectionWay::NO_WAY};
         }
     }
-    return canConnect(other_border_ptr, ConnectionWay::BEGIN_TO_BEGIN) ||
-           canConnect(other_border_ptr, ConnectionWay::BEGIN_TO_END) ||
-           canConnect(other_border_ptr, ConnectionWay::END_TO_BEGIN) ||
-           canConnect(other_border_ptr, ConnectionWay::END_TO_END);
+    std::vector<sml::BaseBorder::ConnectionWay> res;
+
+    if (canConnect(other_border_ptr, ConnectionWay::BEGIN_TO_BEGIN))
+        res.emplace_back(ConnectionWay::BEGIN_TO_BEGIN);
+    if (canConnect(other_border_ptr, ConnectionWay::BEGIN_TO_END))
+        res.emplace_back(ConnectionWay::BEGIN_TO_END);
+    if (canConnect(other_border_ptr, ConnectionWay::END_TO_BEGIN))
+        res.emplace_back(ConnectionWay::END_TO_BEGIN);
+    if (canConnect(other_border_ptr, ConnectionWay::END_TO_END))
+        res.emplace_back(ConnectionWay::END_TO_END);
+
+    if (res.size() == 0) res = {ConnectionWay::NO_WAY};
+
+    return res;
 }
 
 bool

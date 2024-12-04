@@ -1,7 +1,7 @@
 #ifndef FIELD_HPP
 #define FIELD_HPP
 
-#include "base_object.hpp"
+#include "objects/base_object.hpp"
 
 namespace sml
 {
@@ -11,9 +11,7 @@ public:
     void update() noexcept;
 
 private:
-
-	// std::vector<>
-
+    // std::vector<>
 };
 } // namespace sml
 
