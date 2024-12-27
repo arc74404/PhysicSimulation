@@ -11,16 +11,15 @@ class XisConstBorder : public BaseEquationBorder
 public:
     XisConstBorder(float x, YLimit y_def_scope);
 
-    void printData() const override;
+    // void printData() const override;
 
     Point getEndPoint() const noexcept override;
 
     Point getBeginPoint() const noexcept override;
 
-    std::vector<sml::Point> getPoints() override;
+    std::vector<sml::Point> getPoints() const override;
 
 private:
-    float getOrdinate(float x) const noexcept override;
 
     YLimit m_y_limit;
 

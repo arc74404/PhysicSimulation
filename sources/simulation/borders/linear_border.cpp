@@ -7,16 +7,16 @@ sml::LinearBorder::LinearBorder(DefScope def_scope, float coefficient_K,
 {
 }
 
-void
-sml::LinearBorder::printData() const
-{
-    std::cout << "K: " << m_coefficient_K << '\n';
+// void
+// sml::LinearBorder::printData() const
+// {
+//     std::cout << "K: " << m_coefficient_K << '\n';
 
-    std::cout << "B: " << m_coefficient_B << '\n';
+//     std::cout << "B: " << m_coefficient_B << '\n';
 
-    // std::cout << "X1 - X2 : " << m_function_definition_scope.x1 << " "
-    //           << m_function_definition_scope.x2 << '\n';
-}
+//     // std::cout << "X1 - X2 : " << m_function_definition_scope.x1 << " "
+//     //           << m_function_definition_scope.x2 << '\n';
+// }
 
 float
 sml::LinearBorder::getOrdinate(float x) const noexcept
@@ -25,7 +25,7 @@ sml::LinearBorder::getOrdinate(float x) const noexcept
 }
 
 std::vector<sml::Point>
-sml::LinearBorder::getPoints()
+sml::LinearBorder::getPoints() const
 {
     return std::vector<sml::Point>({getBeginPoint(), getEndPoint()});
 }

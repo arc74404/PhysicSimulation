@@ -14,12 +14,9 @@ public:
     enum class EquationType
     {
         X_IS_CONST = 0,
-        CIRCLE = 1
+        CIRCLE     = 1
     };
     BaseEquationBorder(EquationType, bool is_cl) noexcept;
-
-    std::vector<ConnectionWay> getConnectionWays(
-        std::unique_ptr<BaseBorder>& other_border_ptr) const noexcept override;
 
     EquationType getEquationType();
 

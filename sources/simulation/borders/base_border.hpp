@@ -5,6 +5,9 @@
 
 #include <initializer_list>
 #include <mutex>
+#include <optional>
+
+#include "section.hpp"
 
 namespace sml
 {
@@ -14,7 +17,10 @@ using Point = sf::Vector2f;
 class BaseBorder
 {
 private:
-    static float m_points_rate;
+    static float m_points_frequency; // count points on 1
+
+protected:
+    static float getPointsFrequency();
 
 public:
     enum class BaseType
@@ -31,14 +37,11 @@ public:
         NO_WAY
     };
 
-    virtual void printData() const = 0;
+    // virtual void printData() const = 0;
 
     BaseBorder(BaseType) noexcept;
 
-    virtual std::vector<ConnectionWay> getConnectionWays(
-        std::unique_ptr<BaseBorder>& other_border_ptr) const noexcept;
-
-    virtual std::vector<Point> getPoints() = 0;
+    virtual std::vector<Point> getPoints() const = 0;
 
     constexpr BaseType getBaseType() const noexcept;
 
@@ -46,11 +49,7 @@ public:
 
     virtual Point getBeginPoint() const noexcept = 0;
 
-    virtual float getOrdinate(float x) const noexcept = 0;
-
 private:
-    bool canConnect(std::unique_ptr<BaseBorder>& other_border_ptr,
-                    ConnectionWay con_way) const noexcept;
 
     BaseType b_type;
 };

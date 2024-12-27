@@ -41,6 +41,8 @@ private:
 
     void allign();
 
+    Point m_last_point;
+
     Point m_position;
 
     Point m_mass_center;

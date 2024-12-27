@@ -1,5 +1,6 @@
 #include "base_object.hpp"
 
+#include <iomanip>
 #include <iostream>
 
 sml::BaseObject::BaseObject(FormType form_status) noexcept
@@ -107,28 +108,8 @@ sml::BaseObject::addBorder(BaseBorderPtr&& b)
 
     auto size = m_border_vector.size();
 
-    if (size)
-    {
-        auto& last_el = m_border_vector[size - 1];
-
-        auto con_ways = last_el->getConnectionWays(b);
-        if (con_ways[0] == sml::BaseBorder::ConnectionWay::NO_WAY)
-        {
-            return false;
-        }
-        if (con_ways.size() == 2)
-        {
-            if (size == 1)
-            {
-                can_add_new_border = false;
-            }
-            else
-            {
-                return false;
-            }
-        }
-    }
     m_border_vector.emplace_back(std::move(b));
+
     return true;
 }
 
@@ -139,7 +120,8 @@ sml::BaseObject::printPoints() noexcept
 
     for (int i = 0; i < m_point_vector.size(); ++i)
     {
-        std::cout << m_point_vector[i].x << " " << m_point_vector[i].y << '\n';
+        std::cout << std::fixed << std::setprecision(5) << m_point_vector[i].x
+                  << " " << m_point_vector[i].y << '\n';
     }
 
     std::cout << "---------------------------\n";

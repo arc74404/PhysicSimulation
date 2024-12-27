@@ -1,14 +1,14 @@
 #ifndef GUI_HPP
 #define GUI_HPP
 
+#include "logic/scene.hpp"
+
 namespace gui
 {
 class GUI
 {
 public:
-    GUI() noexcept = default;
-
-    // void draw(Scene);
+    void draw(lgc::Scene& scene);
 };
 } // namespace gui
 

@@ -1,17 +1,17 @@
 #include "circle_object.hpp"
 
-sml::CircleObject::CircleObject() : CircleObject(0.f)
+#include "simulation/borders/circle_border.hpp"
+
+sml::CircleObject::CircleObject() : CircleObject(0.f, {0, 0})
 {
 }
 
-sml::CircleObject::CircleObject(float radius) : CircleObject(0.f)
+sml::CircleObject::CircleObject(float radius, const Point& centre)
+    : PatternObject(PatternType::CIRCLE)
 {
-}
+    CircleBorder circle(radius, centre);
 
-void
-sml::CircleObject::setRadius(float radius)
-{
+    addBorder(std::make_unique<CircleBorder>(circle));
 
-	// addBorder();
     fillPointVector();
 }

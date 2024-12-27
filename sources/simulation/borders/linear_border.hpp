@@ -18,9 +18,7 @@ public:
     LinearBorder(DefScope def_scope, float coefficient_K = 0,
                  float coefficient_B = 0);
 
-    virtual void printData() const override;
-
-    std::vector<Point> getPoints() override;
+    std::vector<Point> getPoints() const override;
 
 private:
     virtual float getOrdinate(float x) const noexcept override;

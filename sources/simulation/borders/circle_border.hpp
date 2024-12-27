@@ -1,5 +1,5 @@
-#ifndef CIRCLE_OBJECT_HPP
-#define CIRCLE_OBJECT_HPP
+#ifndef CIRCLE_BORDER_HPP
+#define CIRCLE_BORDER_HPP
 
 #include "base_equation_border.hpp"
 #include "def_scope.hpp"
@@ -17,15 +17,17 @@ public:
 
     Point getBeginPoint() const noexcept override;
 
-    std::vector<sml::Point> getPoints() override;
+    std::vector<sml::Point> getPoints() const override;
+
+    // void printData() const override;
 
 private:
-    float m_begin;
-    float m_end;
+    float m_begin_radians;
+    float m_end_radians;
 
     Point m_centre;
 
     float m_radius;
 };
 } // namespace sml
-#endif // !CIRCLE_OBJECT_HPP
+#endif // !CIRCLE_BORDER_HPP

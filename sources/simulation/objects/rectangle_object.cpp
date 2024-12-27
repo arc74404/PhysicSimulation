@@ -11,16 +11,18 @@ using YLimit   = sml::YLimit;
 void
 sml::RectangleObject::setSize(const sf::Vector2f& size)
 {
-    XisConstBorder left(0, YLimit(0.f, size.y));
+    sf::Vector2f s = {std::abs(size.x), std::abs(size.y)};
+
+    XisConstBorder left(0, YLimit(0.f, s.y));
     BaseBorderPtr left_border = std::make_unique<XisConstBorder>(left);
 
-    LinearBorder top(DefScope(0.f, size.x), 0.f, size.y);
+    LinearBorder top(DefScope(0.f, s.x), 0.f, s.y);
     BaseBorderPtr top_border = std::make_unique<LinearBorder>(top);
 
-    XisConstBorder right(size.x, YLimit(0.f, size.y));
+    XisConstBorder right(s.x, YLimit(0.f, s.y));
     BaseBorderPtr right_border = std::make_unique<XisConstBorder>(right);
 
-    LinearBorder bottom(DefScope(0.f, size.x));
+    LinearBorder bottom(DefScope(0.f, s.x));
     BaseBorderPtr bottom_border = std::make_unique<LinearBorder>(bottom);
 
     addBorder(std::move(left_border));

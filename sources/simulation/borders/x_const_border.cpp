@@ -8,20 +8,15 @@ sml::XisConstBorder::XisConstBorder(float x, YLimit y_l)
 {
 }
 
-void
-sml::XisConstBorder::printData() const
-{
-    std::cout << "X: " << m_x << '\n';
+// void
+// sml::XisConstBorder::printData() const
+// {
+//     std::cout << "X: " << m_x << '\n';
 
-    // std::cout << "X1 - X2 : " << m_function_definition_scope.x1 << " "
-    //           << m_function_definition_scope.x2 << '\n';
-}
+//     // std::cout << "X1 - X2 : " << m_function_definition_scope.x1 << " "
+//     //           << m_function_definition_scope.x2 << '\n';
+// }
 
-float
-sml::XisConstBorder::getOrdinate(float x) const noexcept
-{
-    return m_x;
-}
 
 sml::Point
 sml::XisConstBorder::getEndPoint() const noexcept
@@ -36,7 +31,7 @@ sml::XisConstBorder::getBeginPoint() const noexcept
 }
 
 std::vector<sml::Point>
-sml::XisConstBorder::getPoints()
+sml::XisConstBorder::getPoints() const
 {
     return std::vector<sml::Point>({getBeginPoint(), getEndPoint()});
 }

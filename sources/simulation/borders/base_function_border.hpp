@@ -26,8 +26,6 @@ public:
         BEGIN_TO_BEGIN
     };
 
-    virtual void printData() const = 0;
-
     BaseFunctionBorder(FunctionType, DefScope = {0, 0}) noexcept;
 
     constexpr FunctionType getFunctionType() const noexcept;

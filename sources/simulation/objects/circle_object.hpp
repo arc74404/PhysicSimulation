@@ -10,9 +10,7 @@ class CircleObject : public PatternObject
 public:
     CircleObject();
 
-    CircleObject(float radius);
-
-    void setRadius(float radius);
+    CircleObject(float radius, const Point& centre);
 
 private:
 };

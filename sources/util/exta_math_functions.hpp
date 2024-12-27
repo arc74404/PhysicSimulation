@@ -9,10 +9,10 @@ template <typename T>
 T
 cutBack(T a)
 {
-    while (a >= 2 * std::numbers::pi_v)
-        a -= 2 * std::numbers::pi_v;
-    while (a <= 2 * std::numbers::pi_v)
-        a += 2 * std::numbers::pi_v;
+    while (a >= 2 * std::numbers::pi_v<float>)
+        a -= 2 * std::numbers::pi_v<float>;
+    while (a <= 2 * std::numbers::pi_v<float>)
+        a += 2 * std::numbers::pi_v<float>;
     return a;
 };
 } // namespace utl
