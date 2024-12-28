@@ -1,7 +1,15 @@
 #include "gui.hpp"
 
 void
-gui::GUI::draw(lgc::Scene& scene)
+gui::GUI::draw(std::vector<GUIObjectPtr>& gui_objects)
 {
-    scene.draw();
+    auto& window = gui::Window::getInstance();
+
+    window.clear();
+
+    for (auto& go : gui_objects)
+    {
+        go->draw(window);
+    }
+    window.display();
 }

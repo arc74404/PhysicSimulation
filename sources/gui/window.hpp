@@ -3,6 +3,8 @@
 
 #include <SFML/Graphics.hpp>
 
+// #include "event/gui_event.hpp"
+
 namespace gui
 {
 class Window
@@ -12,10 +14,19 @@ public:
 
     void draw(sf::VertexArray& vertex_array);
 
+    void close();
+
+    void clear();
+    void display();
+
+    sf::Event getEvent();
+
 private:
-    Window() = default;
+    Window();
 
     sf::RenderWindow m_window;
+
+    sf::Event m_event;
 };
 } // namespace gui
 

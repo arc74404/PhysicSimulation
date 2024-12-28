@@ -2,21 +2,26 @@
 #define PROGRAM_STATE_HPP
 
 #include "gui/gui.hpp"
-#include "logic/scene.hpp"
 
 namespace core
 {
 class ProgramState
 {
 public:
-    static ProgramState& getInstance();
+    static ProgramState& getInstance() noexcept;
 
-    void draw(gui::GUI& gui);
+    void draw(gui::GUI& gui) noexcept;
+
+    void update();
+
+    bool isAlive() const noexcept;
 
 private:
-    ProgramState() = default;
+    ProgramState() noexcept;
 
-    lgc::Scene m_scene;
+    std::vector<gui::GUIObjectPtr> m_gui_objects;
+
+    bool m_is_alive;
 };
 } // namespace core
 

@@ -1,14 +1,18 @@
 #ifndef GUI_HPP
 #define GUI_HPP
 
-#include "logic/scene.hpp"
+#include <vector>
+
+#include "gui/gui_object.hpp"
 
 namespace gui
 {
+using GUIObjectPtr = std::unique_ptr<gui::GUIObject>;
+
 class GUI
 {
 public:
-    void draw(lgc::Scene& scene);
+    void draw(std::vector<GUIObjectPtr>& gui_objects);
 };
 } // namespace gui
 
