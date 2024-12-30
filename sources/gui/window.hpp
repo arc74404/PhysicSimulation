@@ -12,7 +12,7 @@ class Window
 public:
     static Window& getInstance();
 
-    void draw(sf::VertexArray& vertex_array);
+    void draw(const sf::VertexArray& vertex_array);
 
     void close();
 

@@ -6,7 +6,7 @@ gui::Window::Window()
 }
 
 void
-gui::Window::draw(sf::VertexArray& vertex_array)
+gui::Window::draw(const sf::VertexArray& vertex_array)
 {
     m_window.draw(vertex_array);
 }

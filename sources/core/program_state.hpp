@@ -1,7 +1,11 @@
 #ifndef PROGRAM_STATE_HPP
 #define PROGRAM_STATE_HPP
 
+#include <unordered_map>
+
 #include "gui/gui.hpp"
+
+#include "gui/figure.hpp"
 
 namespace core
 {
@@ -19,7 +23,7 @@ public:
 private:
     ProgramState() noexcept;
 
-    std::vector<gui::GUIObjectPtr> m_gui_objects;
+    std::unordered_map<int, gui::GUIObjectPtr> m_gui_object_ptr_map;
 
     bool m_is_alive;
 };

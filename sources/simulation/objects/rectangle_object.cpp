@@ -28,9 +28,7 @@ sml::RectangleObject::setSize(const sf::Vector2f& size)
     addBorder(std::move(left_border));
     addBorder(std::move(top_border));
     addBorder(std::move(right_border));
-    addBorder(std::move(bottom_border));
-
-    fillPointVector();
+    addBorder(std::move(bottom_border), true);
 }
 
 sml::RectangleObject::RectangleObject() : RectangleObject({0, 0})

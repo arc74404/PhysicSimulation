@@ -1,6 +1,8 @@
 #ifndef FIELD_HPP
 #define FIELD_HPP
 
+#include <unordered_map>
+
 #include "simulation/objects/base_object.hpp"
 
 namespace sml
@@ -11,10 +13,13 @@ using BaseObjectPtr = std::unique_ptr<BaseObject>;
 class Field
 {
 public:
-    void update() noexcept;
+    void update();
+
+    const std::unordered_map<int, BaseObjectPtr>& getObjectsData()
+        const noexcept;
 
 private:
-    std::vector<BaseObjectPtr> objects;
+    std::unordered_map<int, BaseObjectPtr> objects;
 };
 } // namespace sml
 

@@ -5,12 +5,10 @@
 
 namespace gui
 {
-using Point = sf::Vector2f;
-
 class GUIObject
 {
 public:
-    virtual void draw(Window& window) = 0;
+    virtual void draw(Window& window) const = 0;
 
 private:
 };

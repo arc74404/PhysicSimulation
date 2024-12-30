@@ -4,8 +4,8 @@ sml::NewFormObject::NewFormObject() : BaseObject(FormType::NEW)
 {
 }
 
-bool
+void
 sml::NewFormObject::addBorder(BaseBorderPtr&& b)
 {
-    return BaseObject::addBorder(std::move(b));
+    BaseObject::addBorder(std::move(b));
 }

@@ -12,7 +12,6 @@ namespace sml
 using BaseBorderPtr = std::unique_ptr<sml::BaseBorder>;
 
 using Point = sf::Vector2f;
-using Point = sf::Vector2f;
 
 class BaseObject
 {
@@ -25,35 +24,31 @@ public:
 
     BaseObject(FormType upd_status) noexcept;
 
-    void printPoints() noexcept;
+    void update() noexcept;
+
+    const std::vector<Point>& getPoints() const noexcept;
 
 protected:
-    bool addBorder(BaseBorderPtr&&);
-    void fillPointVector();
+    void addBorder(const BaseBorderPtr& border, bool is_final_border = false);
+    void addPoint(const Point& point, bool is_final_point = false);
 
 private:
-    float getRight();
-    float getBottom();
-    float getLeft();
-    float getTop();
+    float getRight() const;
+    float getBottom() const;
+    float getLeft() const;
+    float getTop() const;
 
-    void findMassCenter();
+    void findMassCenter() const;
 
     void allign();
-
-    Point m_last_point;
 
     Point m_position;
 
     Point m_mass_center;
 
-    std::vector<Point> m_point_vector;
+    std::vector<Point> m_points;
 
-    std::vector<BaseBorderPtr> m_border_vector;
-
-    FormType m_form_status;
-
-    bool can_add_new_border;
+    FormType m_form_type;
 };
 } // namespace sml
 #endif // !BASE_OBJECT_HPP

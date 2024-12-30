@@ -10,7 +10,7 @@ class NewFormObject : public BaseObject
 public:
     NewFormObject();
 
-    bool addBorder(BaseBorderPtr&& b);
+    void addBorder(BaseBorderPtr&& b);
 
 private:
 };

@@ -1,7 +1,9 @@
 #include "gui.hpp"
 
+#include "window.hpp"
+
 void
-gui::GUI::draw(std::vector<GUIObjectPtr>& gui_objects)
+gui::GUI::draw(std::unordered_map<int, gui::GUIObjectPtr>& gui_objects)
 {
     auto& window = gui::Window::getInstance();
 
@@ -9,7 +11,8 @@ gui::GUI::draw(std::vector<GUIObjectPtr>& gui_objects)
 
     for (auto& go : gui_objects)
     {
-        go->draw(window);
+        go.second->draw(window);
     }
+    
     window.display();
 }

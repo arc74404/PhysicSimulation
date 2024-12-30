@@ -4,88 +4,47 @@
 #include <iostream>
 
 sml::BaseObject::BaseObject(FormType form_status) noexcept
-    : m_form_status(form_status), can_add_new_border(true)
+    : m_form_type(form_status)
 {
 }
 
 void
-sml::BaseObject::findMassCenter()
+sml::BaseObject::findMassCenter() const
 {
-}
-
-void
-sml::BaseObject::fillPointVector()
-{
-    if (m_border_vector.empty()) return;
-
-    m_point_vector = m_border_vector[0]->getPoints();
-
-    for (int i = 1; i < m_border_vector.size(); ++i)
-    {
-        std::vector<Point> points = m_border_vector[i]->getPoints();
-
-        m_point_vector.reserve(m_point_vector.size() + points.size());
-
-        auto it_begin = points.begin();
-        auto it_end   = points.end();
-
-        if (points[0] == m_point_vector[m_point_vector.size() - 1])
-        {
-            it_begin += 1;
-        }
-        if (points[points.size() - 1] ==
-            m_point_vector[m_point_vector.size() - 1])
-        {
-            it_end -= 1;
-        }
-        m_point_vector.insert(m_point_vector.end(), it_begin, it_end);
-    }
-
-    allign();
-
-    findMassCenter();
 }
 
 float
-sml::BaseObject::getLeft()
+sml::BaseObject::getLeft() const
 {
-    auto comparePoints = [](const Point& a, const Point& b)
+    auto comparePoints = [](const Point& a, const Point& b) noexcept
     { return a.x < b.x; };
 
-    return std::min_element(m_point_vector.begin(), m_point_vector.end(),
-                            comparePoints)
-        ->x;
+    return std::min_element(m_points.begin(), m_points.end(), comparePoints)->x;
 }
 float
-sml::BaseObject::getTop()
+sml::BaseObject::getTop() const
 {
-    auto comparePoints = [](const Point& a, const Point& b)
+    auto comparePoints = [](const Point& a, const Point& b) noexcept
     { return a.y > b.y; };
 
-    return std::min_element(m_point_vector.begin(), m_point_vector.end(),
-                            comparePoints)
-        ->y;
+    return std::min_element(m_points.begin(), m_points.end(), comparePoints)->y;
 }
 
 float
-sml::BaseObject::getRight()
+sml::BaseObject::getRight() const
 {
-    auto comparePoints = [](const Point& a, const Point& b)
+    auto comparePoints = [](const Point& a, const Point& b) noexcept
     { return a.x > b.x; };
 
-    return std::min_element(m_point_vector.begin(), m_point_vector.end(),
-                            comparePoints)
-        ->x;
+    return std::min_element(m_points.begin(), m_points.end(), comparePoints)->x;
 }
 float
-sml::BaseObject::getBottom()
+sml::BaseObject::getBottom() const
 {
-    auto comparePoints = [](const Point& a, const Point& b)
+    auto comparePoints = [](const Point& a, const Point& b) noexcept
     { return a.y < b.y; };
 
-    return std::min_element(m_point_vector.begin(), m_point_vector.end(),
-                            comparePoints)
-        ->y;
+    return std::min_element(m_points.begin(), m_points.end(), comparePoints)->y;
 }
 
 void
@@ -94,35 +53,48 @@ sml::BaseObject::allign()
     float x_shift = getLeft();
     float y_shift = getBottom();
 
-    for (auto& p : m_point_vector)
+    for (auto& p : m_points)
     {
         p.x -= x_shift;
         p.y -= y_shift;
     }
 }
 
-bool
-sml::BaseObject::addBorder(BaseBorderPtr&& b)
+void
+sml::BaseObject::addBorder(const BaseBorderPtr& b, bool is_final_border)
 {
-    if (!can_add_new_border) return false;
+    auto border_points = b->getPoints();
 
-    auto size = m_border_vector.size();
+    m_points.resize(m_points.size() + border_points.size());
 
-    m_border_vector.emplace_back(std::move(b));
+    std::copy(border_points.begin(), border_points.end(), m_points.end());
 
-    return true;
+    if (is_final_border)
+    {
+        allign();
+        findMassCenter();
+    }
 }
 
 void
-sml::BaseObject::printPoints() noexcept
+sml::BaseObject::addPoint(const Point& point, bool is_final_point)
 {
-    std::cout << "---------------------------\n";
+    m_points.emplace_back(point);
 
-    for (int i = 0; i < m_point_vector.size(); ++i)
+    if (is_final_point)
     {
-        std::cout << std::fixed << std::setprecision(5) << m_point_vector[i].x
-                  << " " << m_point_vector[i].y << '\n';
+        allign();
+        findMassCenter();
     }
+}
 
-    std::cout << "---------------------------\n";
+void
+sml::BaseObject::update() noexcept
+{
+}
+
+const std::vector<sml::Point>&
+sml::BaseObject::getPoints() const noexcept
+{
+    return m_points;
 }

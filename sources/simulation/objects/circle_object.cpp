@@ -11,7 +11,5 @@ sml::CircleObject::CircleObject(float radius, const Point& centre)
 {
     CircleBorder circle(radius, centre);
 
-    addBorder(std::make_unique<CircleBorder>(circle));
-
-    fillPointVector();
+    addBorder(std::make_unique<CircleBorder>(circle), true);
 }
