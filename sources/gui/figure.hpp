@@ -11,9 +11,9 @@ namespace gui
 class Figure : public GUIObject
 {
 public:
-    void draw(Window& window) const override;
+    Figure() noexcept;
 
-    void resize(std::size_t);
+    void draw(Window& window) const override;
 
     void updateVertexes(const std::vector<Point>& points);
 

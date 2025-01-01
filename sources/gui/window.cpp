@@ -1,8 +1,16 @@
 #include "window.hpp"
 
+#include <iostream>
 gui::Window::Window()
 {
     m_window.create(sf::VideoMode({800, 600}), "Simulation");
+
+    m_view.setCenter(400, 300);
+    m_view.setSize(m_window.getSize().x, m_window.getSize().y);
+
+    m_view.zoom(2);
+
+    m_window.setView(m_view);
 }
 
 void
@@ -18,12 +26,12 @@ gui::Window::getInstance()
     return w;
 }
 
-sf::Event
+sf::Event::EventType
 gui::Window::getEvent()
 {
     m_window.pollEvent(m_event);
 
-    return m_event;
+    return m_event.type;
 }
 void
 gui::Window::close()

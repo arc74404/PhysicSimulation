@@ -16,12 +16,6 @@ using Point = sf::Vector2f;
 
 class BaseBorder
 {
-private:
-    static float m_points_frequency; // count points on 1
-
-protected:
-    static float getPointsFrequency();
-
 public:
     enum class BaseType
     {
@@ -43,14 +37,13 @@ public:
 
     virtual std::vector<Point> getPoints() const = 0;
 
-    constexpr BaseType getBaseType() const noexcept;
+    BaseType getBaseType() const noexcept;
 
     virtual Point getEndPoint() const noexcept = 0;
 
     virtual Point getBeginPoint() const noexcept = 0;
 
 private:
-
     BaseType b_type;
 };
 } // namespace sml

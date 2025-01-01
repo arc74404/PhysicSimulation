@@ -13,13 +13,17 @@ using BaseObjectPtr = std::unique_ptr<BaseObject>;
 class Field
 {
 public:
-    void update();
+    Field();
 
-    const std::unordered_map<int, BaseObjectPtr>& getObjectsData()
-        const noexcept;
+    void update(float time);
+
+    const std::unordered_map<int, BaseObjectPtr>& getObjectsData(
+        bool is_updatable) const noexcept;
 
 private:
-    std::unordered_map<int, BaseObjectPtr> objects;
+    std::unordered_map<int, BaseObjectPtr> m_updatable_objects;
+
+    std::unordered_map<int, BaseObjectPtr> m_const_objects;
 };
 } // namespace sml
 

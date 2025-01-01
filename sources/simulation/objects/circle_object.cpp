@@ -9,7 +9,9 @@ sml::CircleObject::CircleObject() : CircleObject(0.f, {0, 0})
 sml::CircleObject::CircleObject(float radius, const Point& centre)
     : PatternObject(PatternType::CIRCLE)
 {
-    CircleBorder circle(radius, centre);
+    setPosition({centre.x - radius, centre.y - radius});
+
+    CircleBorder circle(radius);
 
     addBorder(std::make_unique<CircleBorder>(circle), true);
 }

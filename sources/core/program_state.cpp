@@ -20,32 +20,54 @@ core::ProgramState::getInstance() noexcept
 void
 core::ProgramState::draw(gui::GUI& gui) noexcept
 {
-    gui.draw(m_gui_object_ptr_map);
+    auto& window = gui::Window::getInstance();
+    window.clear();
+    gui.draw(m_updatable_figures);
+    gui.draw(m_const_figures);
+    window.display();
+}
+
+void
+core::ProgramState::updateGraphics()
+{
+    sml::Simulation& simulation = sml::Simulation::getInstance();
+
+    auto& upd_objects_data = simulation.getObjectsData(true);
+
+    for (auto& obj : upd_objects_data)
+    {
+        m_updatable_figures[obj.first].updateVertexes(obj.second->getPoints());
+    }
+
+    auto& const_objects_data = simulation.getObjectsData(false);
+    for (auto& obj : const_objects_data)
+    {
+        m_const_figures[obj.first].updateVertexes(obj.second->getPoints());
+    }
+}
+
+void
+core::ProgramState::handleEvents()
+{
+    auto& window = gui::Window::getInstance();
+
+    auto gui_event = window.getEvent();
+
+    if (gui_event == sf::Event::Closed)
+    {
+        m_is_alive = false;
+        window.close();
+    }
 }
 
 void
 core::ProgramState::update()
 {
-    sml::Simulation& simulation = sml::Simulation::getInstance();
+    float time_as_seconds = m_clock.restart().asSeconds();
 
-    auto& objects_data = simulation.getObjectsData();
-
-    for (auto& obj : objects_data)
-    {
-        std::static_pointer_cast<gui::Figure>(m_gui_object_ptr_map[obj.first])
-            ->updateVertexes(obj.second->getPoints());
-    }
-
-    auto& window = gui::Window::getInstance();
-
-    auto gui_event = window.getEvent();
-
-    if (gui_event.type == sf::Event::Closed)
-    {
-        m_is_alive = false;
-        window.close();
-    }
-    // simulation.update();
+    handleEvents();
+    sml::Simulation::getInstance().update(time_as_seconds);
+    updateGraphics();
 }
 
 bool

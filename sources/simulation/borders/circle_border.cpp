@@ -3,6 +3,7 @@
 #include <iostream>
 #include <numbers>
 
+#include "core/variable_storage.hpp"
 #include "util/exta_math_functions.hpp"
 
 sml::CircleBorder::CircleBorder(float radius, const Point& centre, float begin,
@@ -43,7 +44,8 @@ sml::CircleBorder::getPoints() const
     float radians   = m_begin_radians;
     float direction = (m_begin_radians < m_end_radians) ? 1.0f : -1.0f;
 
-    float frequency = BaseBorder::getPointsFrequency();
+    float frequency =
+        core::VariableStorage::getInstance().getFloat("points_frequency");
 
     Point point;
 

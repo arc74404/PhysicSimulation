@@ -14,10 +14,10 @@ class Simulation
 public:
     static Simulation& getInstance();
 
-    const std::unordered_map<int, BaseObjectPtr>& getObjectsData()
+    const std::unordered_map<int, BaseObjectPtr>& getObjectsData(bool is_updatable)
         const noexcept;
 
-    void update();
+    void update(float time);
 
 private:
     Simulation();

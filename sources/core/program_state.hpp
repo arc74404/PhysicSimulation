@@ -3,9 +3,8 @@
 
 #include <unordered_map>
 
-#include "gui/gui.hpp"
-
 #include "gui/figure.hpp"
+#include "gui/gui.hpp"
 
 namespace core
 {
@@ -23,9 +22,16 @@ public:
 private:
     ProgramState() noexcept;
 
-    std::unordered_map<int, gui::GUIObjectPtr> m_gui_object_ptr_map;
+    void updateGraphics();
+
+    void handleEvents();
+
+    std::unordered_map<int, gui::Figure> m_updatable_figures;
+    std::unordered_map<int, gui::Figure> m_const_figures;
 
     bool m_is_alive;
+
+    sf::Clock m_clock;
 };
 } // namespace core
 

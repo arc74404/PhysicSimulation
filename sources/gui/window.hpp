@@ -19,10 +19,12 @@ public:
     void clear();
     void display();
 
-    sf::Event getEvent();
+    sf::Event::EventType getEvent();
 
 private:
     Window();
+
+    sf::View m_view;
 
     sf::RenderWindow m_window;
 

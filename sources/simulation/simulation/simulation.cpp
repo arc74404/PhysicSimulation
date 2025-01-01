@@ -1,6 +1,6 @@
 #include "simulation.hpp"
 
-sml::Simulation::Simulation() : m_pause(false)
+sml::Simulation::Simulation() : m_pause(false), m_field()
 {
 }
 
@@ -12,13 +12,13 @@ sml::Simulation::getInstance()
 }
 
 void
-sml::Simulation::update()
+sml::Simulation::update(float time)
 {
-    m_field.update();
+    m_field.update(time);
 }
 
 const std::unordered_map<int, sml::BaseObjectPtr>&
-sml::Simulation::getObjectsData() const noexcept
+sml::Simulation::getObjectsData(bool is_updatable) const noexcept
 {
-    return m_field.getObjectsData();
+    return m_field.getObjectsData(is_updatable);
 }

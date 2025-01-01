@@ -10,7 +10,7 @@
 namespace sml
 {
 
-using BaseBorderPtr = std::unique_ptr<sml::BaseBorder>;
+using BaseBorderPtr = std::shared_ptr<sml::BaseBorder>;
 
 class LinearBorder : public BaseFunctionBorder
 {

@@ -8,9 +8,19 @@ namespace gui
 class GUIObject
 {
 public:
+    enum class Type
+    {
+        FIGURE = 0
+    };
+
+    GUIObject(Type t) noexcept;
+
+    Type getType() noexcept;
+
     virtual void draw(Window& window) const = 0;
 
 private:
+    Type m_type;
 };
 } // namespace gui
 

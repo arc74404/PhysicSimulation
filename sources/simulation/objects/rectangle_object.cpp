@@ -11,32 +11,20 @@ using YLimit   = sml::YLimit;
 void
 sml::RectangleObject::setSize(const sf::Vector2f& size)
 {
-    sf::Vector2f s = {std::abs(size.x), std::abs(size.y)};
-
-    XisConstBorder left(0, YLimit(0.f, s.y));
-    BaseBorderPtr left_border = std::make_unique<XisConstBorder>(left);
-
-    LinearBorder top(DefScope(0.f, s.x), 0.f, s.y);
-    BaseBorderPtr top_border = std::make_unique<LinearBorder>(top);
-
-    XisConstBorder right(s.x, YLimit(0.f, s.y));
-    BaseBorderPtr right_border = std::make_unique<XisConstBorder>(right);
-
-    LinearBorder bottom(DefScope(0.f, s.x));
-    BaseBorderPtr bottom_border = std::make_unique<LinearBorder>(bottom);
-
-    addBorder(std::move(left_border));
-    addBorder(std::move(top_border));
-    addBorder(std::move(right_border));
-    addBorder(std::move(bottom_border), true);
+    addPoint({0, 0});
+    addPoint({size.x, 0});
+    addPoint({size.x, size.y});
+    addPoint({0, size.y}, true);
 }
 
-sml::RectangleObject::RectangleObject() : RectangleObject({0, 0})
+sml::RectangleObject::RectangleObject() : RectangleObject({0, 0}, {0, 0})
 {
 }
 
-sml::RectangleObject::RectangleObject(const sf::Vector2f& size)
+sml::RectangleObject::RectangleObject(const sf::Vector2f& size,
+                                      const sf::Vector2f& position)
     : PatternObject(PatternType::RECTANGLE)
 {
     setSize(size);
+    setPosition(position);
 }

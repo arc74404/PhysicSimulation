@@ -1,7 +1,7 @@
 #ifndef BASE_OBJECT_HPP
 #define BASE_OBJECT_HPP
 
-#include <SFML/Graphics.hpp>
+#include <SFML/System/Vector2.hpp>
 
 #include <cstdarg>
 
@@ -9,7 +9,7 @@
 
 namespace sml
 {
-using BaseBorderPtr = std::unique_ptr<sml::BaseBorder>;
+using BaseBorderPtr = std::shared_ptr<sml::BaseBorder>;
 
 using Point = sf::Vector2f;
 
@@ -24,7 +24,7 @@ public:
 
     BaseObject(FormType upd_status) noexcept;
 
-    void update() noexcept;
+    void update(float time) noexcept;
 
     const std::vector<Point>& getPoints() const noexcept;
 
@@ -32,21 +32,29 @@ protected:
     void addBorder(const BaseBorderPtr& border, bool is_final_border = false);
     void addPoint(const Point& point, bool is_final_point = false);
 
-private:
-    float getRight() const;
-    float getBottom() const;
-    float getLeft() const;
-    float getTop() const;
+    void setPosition(const Point& pos);
 
-    void findMassCenter() const;
+private:
+    float getRight() const noexcept;
+    float getBottom() const noexcept;
+    float getLeft() const noexcept;
+    float getTop() const noexcept;
+
+    void findMassCenter();
+    void findMass();
 
     void allign();
 
+    sf::Vector2f m_speed;
+
     Point m_position;
+
+    float m_mass;
 
     Point m_mass_center;
 
     std::vector<Point> m_points;
+    std::vector<Point> m_points_with_position;
 
     FormType m_form_type;
 };

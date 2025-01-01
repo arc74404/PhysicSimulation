@@ -10,7 +10,7 @@ class RectangleObject : public PatternObject
 public:
     RectangleObject();
 
-    RectangleObject(const sf::Vector2f& size);
+    RectangleObject(const sf::Vector2f& size, const sf::Vector2f& position);
 
     void setSize(const sf::Vector2f& size);
 

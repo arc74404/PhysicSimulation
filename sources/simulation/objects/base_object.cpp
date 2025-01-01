@@ -3,18 +3,28 @@
 #include <iomanip>
 #include <iostream>
 
+#include "core/variable_storage.hpp"
+#include "simulation/borders/base_equation_border.hpp"
+#include "simulation/simulation/powers.hpp"
+
 sml::BaseObject::BaseObject(FormType form_status) noexcept
-    : m_form_type(form_status)
+    : m_form_type(form_status), m_speed(0, 0)
 {
 }
 
 void
-sml::BaseObject::findMassCenter() const
+sml::BaseObject::findMassCenter()
 {
 }
 
+void
+sml::BaseObject::findMass()
+{
+    m_mass = 100.f;
+}
+
 float
-sml::BaseObject::getLeft() const
+sml::BaseObject::getLeft() const noexcept
 {
     auto comparePoints = [](const Point& a, const Point& b) noexcept
     { return a.x < b.x; };
@@ -22,7 +32,7 @@ sml::BaseObject::getLeft() const
     return std::min_element(m_points.begin(), m_points.end(), comparePoints)->x;
 }
 float
-sml::BaseObject::getTop() const
+sml::BaseObject::getTop() const noexcept
 {
     auto comparePoints = [](const Point& a, const Point& b) noexcept
     { return a.y > b.y; };
@@ -31,7 +41,7 @@ sml::BaseObject::getTop() const
 }
 
 float
-sml::BaseObject::getRight() const
+sml::BaseObject::getRight() const noexcept
 {
     auto comparePoints = [](const Point& a, const Point& b) noexcept
     { return a.x > b.x; };
@@ -39,7 +49,7 @@ sml::BaseObject::getRight() const
     return std::min_element(m_points.begin(), m_points.end(), comparePoints)->x;
 }
 float
-sml::BaseObject::getBottom() const
+sml::BaseObject::getBottom() const noexcept
 {
     auto comparePoints = [](const Point& a, const Point& b) noexcept
     { return a.y < b.y; };
@@ -55,8 +65,8 @@ sml::BaseObject::allign()
 
     for (auto& p : m_points)
     {
-        p.x -= x_shift;
-        p.y -= y_shift;
+        p.x = p.x - x_shift + m_position.x;
+        p.y = p.y - y_shift + m_position.y;
     }
 }
 
@@ -67,12 +77,23 @@ sml::BaseObject::addBorder(const BaseBorderPtr& b, bool is_final_border)
 
     m_points.resize(m_points.size() + border_points.size());
 
-    std::copy(border_points.begin(), border_points.end(), m_points.end());
+    std::copy(border_points.begin(), border_points.end(),
+              m_points.end() - border_points.size());
 
     if (is_final_border)
     {
+        if (b->getBaseType() == BaseBorder::BaseType::EQUATION)
+        {
+            if (!std::static_pointer_cast<BaseEquationBorder>(b)->isClosed())
+            {
+                m_points.emplace_back(m_points[0]);
+            }
+        }
+        else m_points.emplace_back(m_points[0]);
         allign();
         findMassCenter();
+        findMass();
+        m_points_with_position = m_points;
     }
 }
 
@@ -83,18 +104,44 @@ sml::BaseObject::addPoint(const Point& point, bool is_final_point)
 
     if (is_final_point)
     {
+        m_points.emplace_back(m_points[0]);
         allign();
         findMassCenter();
+        findMass();
+        m_points_with_position = m_points;
     }
 }
 
 void
-sml::BaseObject::update() noexcept
+sml::BaseObject::setPosition(const Point& pos)
 {
+    m_position = pos;
+
+    for (int i = 0; i < m_points_with_position.size(); ++i)
+    {
+        m_points_with_position[i] = m_points[i] + m_position;
+    }
+}
+
+void
+sml::BaseObject::update(float time) noexcept
+{
+    auto f = sml::forces::gravity(m_mass);
+
+    int pixels_per_metr =
+        core::VariableStorage::getInstance().getInt("pixels_per_metr");
+
+    m_speed.x += f.acceleration.x * time * pixels_per_metr;
+    m_speed.y += f.acceleration.y * time * pixels_per_metr;
+
+    m_position.x += m_speed.x * time;
+    m_position.y += m_speed.y * time;
+
+    setPosition(m_position);
 }
 
 const std::vector<sml::Point>&
 sml::BaseObject::getPoints() const noexcept
 {
-    return m_points;
+    return m_points_with_position;
 }
