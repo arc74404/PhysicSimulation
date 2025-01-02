@@ -11,6 +11,7 @@ using YLimit   = sml::YLimit;
 void
 sml::RectangleObject::setSize(const sf::Vector2f& size)
 {
+    deleteAllPoints();
     addPoint({0, 0});
     addPoint({size.x, 0});
     addPoint({size.x, size.y});
@@ -21,10 +22,16 @@ sml::RectangleObject::RectangleObject() : RectangleObject({0, 0}, {0, 0})
 {
 }
 
+void
+sml::RectangleObject::setPosition(const sf::Vector2f& pos)
+{
+    BaseObject::setPosition(pos);
+}
+
 sml::RectangleObject::RectangleObject(const sf::Vector2f& size,
                                       const sf::Vector2f& position)
     : PatternObject(PatternType::RECTANGLE)
 {
     setSize(size);
-    setPosition(position);
+    BaseObject::setPosition(position);
 }

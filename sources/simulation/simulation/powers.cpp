@@ -11,7 +11,7 @@ sml::forces::gravity(float mass)
 
     res.magnitude      = mass * g;
     res.acceleration.x = 0;
-    res.acceleration.y = -g;
+    res.acceleration.y = g;
     return res;
 }
 

@@ -8,6 +8,13 @@
 core::ProgramState::ProgramState() noexcept
 {
     m_is_alive = true;
+
+    sml::Simulation& simulation = sml::Simulation::getInstance();
+    auto& const_objects_data    = simulation.getObjectsData(false);
+    for (auto& obj : const_objects_data)
+    {
+        m_const_figures[obj.first].updateVertexes(obj.second->getPoints());
+    }
 }
 
 core::ProgramState&
@@ -37,12 +44,6 @@ core::ProgramState::updateGraphics()
     for (auto& obj : upd_objects_data)
     {
         m_updatable_figures[obj.first].updateVertexes(obj.second->getPoints());
-    }
-
-    auto& const_objects_data = simulation.getObjectsData(false);
-    for (auto& obj : const_objects_data)
-    {
-        m_const_figures[obj.first].updateVertexes(obj.second->getPoints());
     }
 }
 

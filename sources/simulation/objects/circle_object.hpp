@@ -12,7 +12,13 @@ public:
 
     CircleObject(float radius, const Point& centre);
 
+    void setRadius(float r);
+
+    void setCentre(const sf::Vector2f& position);
+
 private:
+    Point m_centre;
+    float m_radius;
 };
 } // namespace sml
 #endif // !CIRCLE_OBJECT_HPP

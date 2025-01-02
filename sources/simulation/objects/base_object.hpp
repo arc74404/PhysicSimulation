@@ -24,6 +24,9 @@ public:
 
     BaseObject(FormType upd_status) noexcept;
 
+    static void handleCollision(std::shared_ptr<BaseObject> left,
+                                std::shared_ptr<BaseObject> right);
+
     void update(float time) noexcept;
 
     const std::vector<Point>& getPoints() const noexcept;
@@ -32,7 +35,9 @@ protected:
     void addBorder(const BaseBorderPtr& border, bool is_final_border = false);
     void addPoint(const Point& point, bool is_final_point = false);
 
-    void setPosition(const Point& pos);
+    void deleteAllPoints();
+
+    virtual void setPosition(const Point& pos);
 
 private:
     float getRight() const noexcept;

@@ -11,6 +11,8 @@ gui::Window::Window()
     m_view.zoom(2);
 
     m_window.setView(m_view);
+
+    m_window.setFramerateLimit(80);
 }
 
 void

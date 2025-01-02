@@ -7,7 +7,7 @@
 
 namespace sml
 {
-using BaseObjectPtr = std::unique_ptr<BaseObject>;
+using BaseObjectPtr = std::shared_ptr<BaseObject>;
 
 class Simulation
 {

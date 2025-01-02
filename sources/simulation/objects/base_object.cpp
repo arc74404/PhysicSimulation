@@ -23,6 +23,13 @@ sml::BaseObject::findMass()
     m_mass = 100.f;
 }
 
+void
+sml::BaseObject::deleteAllPoints()
+{
+    m_points.clear();
+    m_points_with_position.clear();
+}
+
 float
 sml::BaseObject::getLeft() const noexcept
 {
@@ -63,11 +70,7 @@ sml::BaseObject::allign()
     float x_shift = getLeft();
     float y_shift = getBottom();
 
-    for (auto& p : m_points)
-    {
-        p.x = p.x - x_shift + m_position.x;
-        p.y = p.y - y_shift + m_position.y;
-    }
+    setPosition(m_position);
 }
 
 void

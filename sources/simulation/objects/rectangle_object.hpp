@@ -13,6 +13,7 @@ public:
     RectangleObject(const sf::Vector2f& size, const sf::Vector2f& position);
 
     void setSize(const sf::Vector2f& size);
+    void setPosition(const sf::Vector2f& pos) override;
 
 private:
 };
