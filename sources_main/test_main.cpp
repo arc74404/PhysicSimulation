@@ -1,8 +1,6 @@
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
 
-// #include "core/logging/logging.hpp"
-
 int
 main(int argc, char** argv)
 {

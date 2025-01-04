@@ -54,7 +54,7 @@ core::ProgramState::handleEvents()
 
     auto gui_event = window.getEvent();
 
-    if (gui_event == sf::Event::Closed)
+    if (sf::Mouse::isButtonPressed(sf::Mouse::Right))
     {
         m_is_alive = false;
         window.close();

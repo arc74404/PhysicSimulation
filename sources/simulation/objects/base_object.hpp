@@ -25,7 +25,8 @@ public:
     BaseObject(FormType upd_status) noexcept;
 
     static void handleCollision(std::shared_ptr<BaseObject> left,
-                                std::shared_ptr<BaseObject> right);
+                                std::shared_ptr<BaseObject> right,
+                                bool is_right_const = false) noexcept;
 
     void update(float time) noexcept;
 
@@ -35,7 +36,7 @@ protected:
     void addBorder(const BaseBorderPtr& border, bool is_final_border = false);
     void addPoint(const Point& point, bool is_final_point = false);
 
-    void deleteAllPoints();
+    void deleteAllPoints() noexcept;
 
     virtual void setPosition(const Point& pos);
 

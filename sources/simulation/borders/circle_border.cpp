@@ -4,7 +4,7 @@
 #include <numbers>
 
 #include "core/variable_storage.hpp"
-#include "util/exta_math_functions.hpp"
+#include "util/extra_math_functions.hpp"
 
 sml::CircleBorder::CircleBorder(float radius, const Point& centre, float begin,
                                 float end) noexcept

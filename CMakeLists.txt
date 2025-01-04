@@ -63,4 +63,6 @@ create_exe(${TEST_EXE_NAME})
 
 include(sources_test/sources.cmake)
 
+target_link_libraries(${TEST_EXE_NAME} PRIVATE sfml-system sfml-audio sfml-network sfml-graphics sfml-window)
 target_link_libraries(${TEST_EXE_NAME} PRIVATE GTest::gtest GTest::gtest_main GTest::gmock GTest::gmock_main)
+

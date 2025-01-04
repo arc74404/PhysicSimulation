@@ -24,12 +24,12 @@ sml::CircleObject::setRadius(float r)
 
     addBorder(std::make_unique<CircleBorder>(circle), true);
 
-    setCentre(m_centre);
+    setPosition({m_centre.x - m_radius, m_centre.y - m_radius});
 }
 
 void
 sml::CircleObject::setCentre(const sf::Vector2f& centre_position)
 {
     m_centre = centre_position;
-    setPosition({centre_position.x - m_radius, centre_position.y - m_radius});
+    setPosition({m_centre.x - m_radius, m_centre.y - m_radius});
 }

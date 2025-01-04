@@ -24,7 +24,7 @@ sml::BaseObject::findMass()
 }
 
 void
-sml::BaseObject::deleteAllPoints()
+sml::BaseObject::deleteAllPoints() noexcept
 {
     m_points.clear();
     m_points_with_position.clear();
@@ -70,7 +70,11 @@ sml::BaseObject::allign()
     float x_shift = getLeft();
     float y_shift = getBottom();
 
-    setPosition(m_position);
+    for (auto& p : m_points)
+    {
+        p.x -= x_shift;
+        p.y -= y_shift;
+    }
 }
 
 void
@@ -141,6 +145,14 @@ sml::BaseObject::update(float time) noexcept
     m_position.y += m_speed.y * time;
 
     setPosition(m_position);
+}
+
+void
+sml::BaseObject::handleCollision(std::shared_ptr<BaseObject> left,
+                                 std::shared_ptr<BaseObject> right,
+                                 bool is_right_const) noexcept
+{
+    
 }
 
 const std::vector<sml::Point>&
