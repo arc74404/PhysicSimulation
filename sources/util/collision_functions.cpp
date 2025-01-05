@@ -1,6 +1,9 @@
 #include "collision_functions.hpp"
 
+#include <cmath>
+
 #include "extra_math_functions.hpp"
+
 void
 utl::allign(std::vector<Point>& left, const sf::Vector2f& left_direction,
             std::vector<Point>& right, const sf::Vector2f& right_direction)
@@ -11,32 +14,53 @@ utl::allign(std::vector<Point>& left, const sf::Vector2f& left_direction,
     int left_points_count  = left.size();
     int right_points_count = right.size();
 
+    sf::Vector2f max_displacement_vector = {0.f, 0.f};
+    float max_distance                   = 0;
+
     for (int i = 0; i < left_points_count; ++i)
     {
-        Section l_section = utl::getParallelSection(left_direction, left[i]);
+        // build the ray in the opposite direction
+        Section ray = utl::getCounterDirectionalRay(left_direction, left[i]);
 
+        int intersections_count = 0;
+
+        float max_local_distance = 0;
+
+        Point intersection_point_with_max_distance;
+
+        // check borders
         for (int j = 0; j < right_points_count; ++j)
         {
+            float distance;
             Section border = {right[j], right[j + 1]};
 
-            
+            auto intersection_point = isIntersect(border, ray);
+
+            if (intersection_point.has_value())
+            {
+                distance = getDistance(left[i], *intersection_point);
+                if (max_distance < distance)
+                {
+                    max_distance = distance;
+
+                    intersection_point_with_max_distance = *intersection_point;
+                }
+                ++intersections_count;
+            }
+        }
+        // odd intersections => point in the polygon
+        if (intersections_count % 2 != 0)
+        {
+            if (max_distance < max_local_distance)
+            {
+                max_distance = max_local_distance;
+
+                max_displacement_vector = {
+                    intersection_point_with_max_distance.x - left[i].x,
+                    intersection_point_with_max_distance.y - left[i].y};
+            }
         }
     }
-
-    // for (int i = 0; i < right_points_count; ++i)
-    // {
-    //     Section section = utl::getParallelSection(right_direction, right[i]);
-    // }
-    // for (int l = 0; l < left_points_count; ++l)
-    // {
-    //     Point& lp1 = left[l];
-    //     Point& lp2 = left[l + 1];
-    //     for (int r = 0; r < right_points_count; ++r)
-    //     {
-    //         Point& rp1 = right[r];
-    //         Point& rp2 = right[r + 1];
-    //     }
-    // }
 }
 
 std::optional<utl::Point>
@@ -123,4 +147,20 @@ utl::isIntersect(Section left, Section right)
     }
 
     return res;
+}
+
+utl::Section
+utl::getCounterDirectionalRay(const sf::Vector2f& direction, const Point& p)
+{
+    Section res;
+    res.first  = p;
+    res.second = {(p.x - direction.x) * 1000.f, (p.y - direction.y) * 1000.f};
+
+    return res;
+}
+
+float
+utl::getDistance(const Point& p1, const Point& p2)
+{
+    return std::sqrt(std::pow(p1.x - p2.x, 2) + std::pow(p1.y - p2.y, 2));
 }

@@ -1,5 +1,7 @@
 #include "extra_math_functions.hpp"
 
+#include <cmath>
+
 bool
 utl::isPointsEqual(const Point& left, const Point& right)
 {
@@ -8,7 +10,8 @@ utl::isPointsEqual(const Point& left, const Point& right)
 }
 
 bool
-utl::isFloatsEqual(float left, float right)
+utl::isFloatsEqual(float left, float right, int count_digits_after_dot)
 {
-    return (right - 0.000001f) < left && left < (right + 0.000001f);
+    float d = 1 / std::pow(10, count_digits_after_dot);
+    return (right - d) < left && left < (right + d);
 }

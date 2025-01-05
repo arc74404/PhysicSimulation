@@ -112,7 +112,6 @@ TEST(UtilIsIntersect, is_intersect_regular_and_regular_true)
     isIntersectTest(sec2, sec1, correct_point);
 }
 
-
 TEST(UtilIsIntersect, is_intersect_regular_and_regular_false)
 {
     utl::Section sec1 = {
@@ -128,4 +127,66 @@ TEST(UtilIsIntersect, is_intersect_regular_and_regular_false)
 
     res = utl::isIntersect(sec2, sec1);
     ASSERT_EQ(res.has_value(), false);
+}
+
+//------------------------------------------------------------------------------
+// Simple tests for UtilGetDistance
+//------------------------------------------------------------------------------
+
+TEST(UtilGetDistance, get_distance_int_coordinates)
+{
+    utl::Point p1, p2;
+
+    p1 = {0.f, 0.f};
+    p2 = {4.f, 3.f};
+
+    auto res = utl::getDistance(p1, p2);
+    ASSERT_EQ(utl::isFloatsEqual(res, 5.f), true);
+    res = utl::getDistance(p2, p1);
+    ASSERT_EQ(utl::isFloatsEqual(res, 5.f), true);
+    ////////////////////////
+    p1  = {-1.f, -1.f};
+    p2  = {11.f, 8.f};
+    res = utl::getDistance(p1, p2);
+    ASSERT_EQ(utl::isFloatsEqual(res, 15.f), true);
+    res = utl::getDistance(p2, p1);
+    ASSERT_EQ(utl::isFloatsEqual(res, 15.f), true);
+}
+
+//------------------------------------------------------------------------------
+// Difficult tests for UtilGetDistance
+//------------------------------------------------------------------------------
+
+TEST(UtilGetDistance, get_distance_float_coordinates)
+{
+    utl::Point p1, p2;
+
+    p1 = {12952.f / 27.f, -235.22f};
+    p2 = {5.f / 7.f, -3.f / 53.f};
+
+    float correct_res = std::sqrt(17856349967556372.f) / 250425.f;
+
+    auto res = utl::getDistance(p1, p2);
+    ASSERT_EQ(utl::isFloatsEqual(res, correct_res, 3), true);
+    res = utl::getDistance(p2, p1);
+    ASSERT_EQ(utl::isFloatsEqual(res, correct_res, 3), true);
+}
+
+//------------------------------------------------------------------------------
+// Simple tests for UtilGetCounterDirectionalRay
+//------------------------------------------------------------------------------
+
+TEST(UtilGetCounterDirectionalRay, get_counter_directional_ray_int_coordinates)
+{
+    sf::Vector2f vec = {4.f, -3.f};
+
+    utl::Point p = {-1.f, -2.f};
+
+    utl::Section res = utl::getCounterDirectionalRay(vec, p);
+
+    utl::Section correct_section;
+    correct_section.first  = p;
+    correct_section.second = {-5000, 1000};
+
+    ASSERT_EQ(res, correct_section);
 }

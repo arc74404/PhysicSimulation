@@ -23,7 +23,10 @@ std::optional<Point>
 isIntersect(Section left, Section right);
 
 Section
-getParallelSection(const sf::Vector2f& vector, const Point& p);
+getCounterDirectionalRay(const sf::Vector2f& direction, const Point& p);
+
+float
+getDistance(const Point& p1, const Point& p2);
 
 } // namespace utl
 

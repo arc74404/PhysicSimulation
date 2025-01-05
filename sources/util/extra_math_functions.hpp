@@ -24,7 +24,7 @@ bool
 isPointsEqual(const utl::Point& left, const utl::Point& right);
 
 bool
-isFloatsEqual(float left, float right);
+isFloatsEqual(float left, float right, int count_digits_after_dot = 5);
 
 } // namespace utl
 
