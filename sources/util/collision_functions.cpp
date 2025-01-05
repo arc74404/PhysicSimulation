@@ -2,7 +2,8 @@
 
 #include "extra_math_functions.hpp"
 void
-utl::allign(std::vector<Point>& left, std::vector<Point>& right)
+utl::allign(std::vector<Point>& left, const sf::Vector2f& left_direction,
+            std::vector<Point>& right, const sf::Vector2f& right_direction)
 {
     std::vector<Point*> left_points_ptr_into_right;
     std::vector<Point*> right_points_ptr_into_left;
@@ -10,17 +11,32 @@ utl::allign(std::vector<Point>& left, std::vector<Point>& right)
     int left_points_count  = left.size();
     int right_points_count = right.size();
 
-    for (int l = 0; l < left_points_count; ++l)
+    for (int i = 0; i < left_points_count; ++i)
     {
-        Point& lp1 = left[l];
-        Point& lp2 = left[l + 1];
+        Section l_section = utl::getParallelSection(left_direction, left[i]);
 
-        for (int r = 0; r < right_points_count; ++r)
+        for (int j = 0; j < right_points_count; ++j)
         {
-            Point& rp1 = right[r];
-            Point& rp2 = right[r + 1];
+            Section border = {right[j], right[j + 1]};
+
+            
         }
     }
+
+    // for (int i = 0; i < right_points_count; ++i)
+    // {
+    //     Section section = utl::getParallelSection(right_direction, right[i]);
+    // }
+    // for (int l = 0; l < left_points_count; ++l)
+    // {
+    //     Point& lp1 = left[l];
+    //     Point& lp2 = left[l + 1];
+    //     for (int r = 0; r < right_points_count; ++r)
+    //     {
+    //         Point& rp1 = right[r];
+    //         Point& rp2 = right[r + 1];
+    //     }
+    // }
 }
 
 std::optional<utl::Point>
@@ -73,5 +89,38 @@ utl::getIntersection(const Section& left, const Section& right) noexcept
         p.y = left_K * p.x + left_B;
     }
     res.emplace(p);
+    return res;
+}
+
+std::optional<utl::Point>
+utl::isIntersect(Section left, Section right)
+{
+    auto res = getIntersection(left, right);
+
+    if (left.first.x > left.second.x) std::swap(left.first.x, left.second.x);
+    if (left.first.y > left.second.y) std::swap(left.first.y, left.second.y);
+    if (right.first.x > right.second.x)
+        std::swap(right.first.x, right.second.x);
+    if (right.first.y > right.second.y)
+        std::swap(right.first.y, right.second.y);
+
+    if (res.has_value())
+    {
+        bool x_axis_left = (res->x >= left.first.x && res->x <= left.second.x);
+
+        bool y_axis_left = (res->y >= left.first.y && res->y <= left.second.y);
+
+        bool x_axis_right =
+            (res->x >= right.first.x && res->x <= right.second.x);
+
+        bool y_axis_right =
+            (res->y >= right.first.y && res->y <= right.second.y);
+
+        if (!(x_axis_left && y_axis_left && x_axis_right && y_axis_right))
+        {
+            res.reset();
+        }
+    }
+
     return res;
 }
