@@ -44,13 +44,11 @@ sml::Field::update(float time)
         for (; j != ue; ++j)
         {
             BaseObject::handleCollision(i->second, j->second);
-            // std::cout << "U  " << i->first << "  U  " << j->first << '\n';
         }
         j = cb;
         for (auto j = cb; j != ce; ++j)
         {
             BaseObject::handleCollision(i->second, j->second);
-            // std::cout << "U  " << i->first << "  C  " << j->first << '\n';
         }
     }
     // std::cout << "-------------------\n";

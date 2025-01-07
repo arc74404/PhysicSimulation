@@ -23,6 +23,9 @@ std::optional<Point>
 isIntersect(Section left, Section right);
 
 Section
+getDirectionalRay(const sf::Vector2f& direction, const Point& p);
+
+Section
 getCounterDirectionalRay(const sf::Vector2f& direction, const Point& p);
 
 float
@@ -30,7 +33,7 @@ getDistance(const Point& p1, const Point& p2);
 
 sf::Vector2f
 getDisplacementVector(std::vector<Point>& first, const sf::Vector2f& direction,
-                      std::vector<Point>& second);
+                      std::vector<Point>& second, bool is_counter_directional);
 
 } // namespace utl
 

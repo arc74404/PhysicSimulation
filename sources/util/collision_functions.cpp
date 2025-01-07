@@ -12,10 +12,10 @@ utl::allign(std::vector<Point>& left, const sf::Vector2f& left_direction,
     right.emplace_back(right[0]);
 
     sf::Vector2f max_displacement_vector_l =
-        getDisplacementVector(left, left_direction, right);
+        getDisplacementVector(left, left_direction, right, true);
 
     sf::Vector2f max_displacement_vector_r =
-        getDisplacementVector(right, left_direction, left);
+        getDisplacementVector(right, left_direction, left, false);
 
     sf::Vector2f max_displacement_vector;
     if (getDistance(Point(0, 0), max_displacement_vector_l) >
@@ -129,7 +129,15 @@ utl::getCounterDirectionalRay(const sf::Vector2f& direction, const Point& p)
     Section res;
     res.first  = p;
     res.second = {(p.x - direction.x * 1000.f), (p.y - direction.y * 1000.f)};
+    return res;
+}
 
+utl::Section
+utl::getDirectionalRay(const sf::Vector2f& direction, const Point& p)
+{
+    Section res;
+    res.first  = p;
+    res.second = {(p.x + direction.x * 1000.f), (p.y + direction.y * 1000.f)};
     return res;
 }
 
@@ -142,11 +150,15 @@ utl::getDistance(const Point& p1, const Point& p2)
 sf::Vector2f
 utl::getDisplacementVector(std::vector<Point>& first,
                            const sf::Vector2f& direction,
-                           std::vector<Point>& second)
+                           std::vector<Point>& second,
+                           bool is_counter_directional)
 {
     auto first_points_count  = first.size();
     auto second_points_count = second.size();
     float max_distance       = std::numeric_limits<float>::min();
+
+    auto* getRay =
+        is_counter_directional ? getCounterDirectionalRay : getDirectionalRay;
 
     sf::Vector2f max_displacement_vector = {0, 0};
 
@@ -155,7 +167,10 @@ utl::getDisplacementVector(std::vector<Point>& first,
     for (int i = 0; i < first_points_count - 1; ++i)
     {
         // build the ray in the opposite direction
-        Section ray = utl::getCounterDirectionalRay(direction, first[i]);
+        Section ray = getRay(direction, first[i]);
+        // if (is_counter_directional)
+        //     ray = getCounterDirectionalRay(direction, first[i]);
+        // else ray = getDirectionalRay(direction, first[i]);
 
         int intersections_count = 0;
 
@@ -199,6 +214,11 @@ utl::getDisplacementVector(std::vector<Point>& first,
         {
             flag_was_intersection = true;
         }
+    }
+    if (!is_counter_directional)
+    {
+        max_displacement_vector.x *= -1.f;
+        max_displacement_vector.y *= -1.f;
     }
 
     return flag_was_intersection ? max_displacement_vector : sf::Vector2f(0, 0);
