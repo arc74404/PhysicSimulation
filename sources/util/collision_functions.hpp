@@ -14,7 +14,7 @@ using Section = std::pair<Point, Point>;
 
 void
 allign(std::vector<Point>& left, const sf::Vector2f& left_direction,
-       std::vector<Point>& right, const sf::Vector2f& right_direction);
+       std::vector<Point>& right);
 
 std::optional<Point>
 getIntersection(const Section& left, const Section& right) noexcept;

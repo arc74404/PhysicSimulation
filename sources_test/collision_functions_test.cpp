@@ -186,7 +186,7 @@ TEST(UtilGetCounterDirectionalRay, get_counter_directional_ray_int_coordinates)
 
     utl::Section correct_section;
     correct_section.first  = p;
-    correct_section.second = {-5000, 1000};
+    correct_section.second = {p.x - 4000.f, p.y + 3000.f};
 
     ASSERT_EQ(res, correct_section);
 }
