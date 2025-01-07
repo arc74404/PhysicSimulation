@@ -28,6 +28,10 @@ getCounterDirectionalRay(const sf::Vector2f& direction, const Point& p);
 float
 getDistance(const Point& p1, const Point& p2);
 
+sf::Vector2f
+getDisplacementVector(std::vector<Point>& first, const sf::Vector2f& direction,
+                      std::vector<Point>& second);
+
 } // namespace utl
 
 #endif // COLLISION_FUNCTIONS_HPP

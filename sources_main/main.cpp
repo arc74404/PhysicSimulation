@@ -22,7 +22,7 @@ createRect(const std::vector<sf::Vector2f>& vec, sf::Color color)
 {
     sf::VertexArray v_arr(sf::PrimitiveType::LinesStrip);
 
-    v_arr.resize(vec.size()); 
+    v_arr.resize(vec.size());
     float m = 30;
     for (int i = 0; i < vec.size(); ++i)
     {

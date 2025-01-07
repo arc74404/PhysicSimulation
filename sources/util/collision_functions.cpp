@@ -11,108 +11,27 @@ utl::allign(std::vector<Point>& left, const sf::Vector2f& left_direction,
     left.emplace_back(left[0]);
     right.emplace_back(right[0]);
 
-    int left_points_count  = left.size();
-    int right_points_count = right.size();
+    sf::Vector2f max_displacement_vector_l =
+        getDisplacementVector(left, left_direction, right);
 
-    sf::Vector2f max_displacement_vector = {0.f, 0.f};
+    sf::Vector2f max_displacement_vector_r =
+        getDisplacementVector(right, left_direction, left);
 
-    float max_distance = std::numeric_limits<float>::min();
-
-    for (int i = 0; i < left_points_count - 1; ++i)
+    sf::Vector2f max_displacement_vector;
+    if (getDistance(Point(0, 0), max_displacement_vector_l) >
+        getDistance(Point(0, 0), max_displacement_vector_r))
     {
-        // build the ray in the opposite direction
-        Section ray = utl::getCounterDirectionalRay(left_direction, left[i]);
-
-        int intersections_count = 0;
-
-        float max_local_distance = 0;
-
-        Point intersection_point_with_max_distance;
-
-        // check borders
-        for (int j = 0; j < right_points_count - 1; ++j)
-        {
-            float distance;
-            Section border = {right[j], right[j + 1]};
-
-            auto intersection_point = isIntersect(border, ray);
-
-            if (intersection_point.has_value())
-            {
-                distance = getDistance(left[i], *intersection_point);
-                if (max_local_distance < distance)
-                {
-                    max_local_distance = distance;
-
-                    intersection_point_with_max_distance = *intersection_point;
-                }
-                ++intersections_count;
-            }
-        }
-        // odd intersections => point in the polygon
-        if (intersections_count > 0)
-        {
-            if (max_distance < max_local_distance)
-            {
-                max_distance = max_local_distance;
-
-                max_displacement_vector = {
-                    intersection_point_with_max_distance.x - left[i].x,
-                    intersection_point_with_max_distance.y - left[i].y};
-            }
-        }
+        max_displacement_vector = max_displacement_vector_l;
     }
-    for (int i = 0; i < right_points_count - 1; ++i)
+    else
     {
-        // build the ray in the opposite direction
-        Section ray = utl::getCounterDirectionalRay(left_direction, right[i]);
-        ray.second.x *= -1;
-        ray.second.y *= -1;
-
-        int intersections_count = 0;
-
-        float max_local_distance = 0;
-
-        Point intersection_point_with_max_distance;
-
-        // check borders
-        for (int j = 0; j < left_points_count - 1; ++j)
-        {
-            float distance;
-            Section border = {left[j], left[j + 1]};
-
-            auto intersection_point = isIntersect(border, ray);
-
-            if (intersection_point.has_value())
-            {
-                distance = getDistance(right[i], *intersection_point);
-                if (max_local_distance < distance)
-                {
-                    max_local_distance = distance;
-
-                    intersection_point_with_max_distance = *intersection_point;
-                }
-                ++intersections_count;
-            }
-        }
-        // odd intersections => point in the polygon
-        if (intersections_count > 0)
-        {
-            if (max_distance < max_local_distance)
-            {
-                max_distance = max_local_distance;
-
-                max_displacement_vector = {
-                    intersection_point_with_max_distance.x - left[i].x,
-                    intersection_point_with_max_distance.y - left[i].y};
-            }
-        }
+        max_displacement_vector = max_displacement_vector_r;
     }
 
     left.erase(left.end() - 1);
     right.erase(right.end() - 1);
 
-    for (int i = 0; i < left_points_count - 1; ++i)
+    for (int i = 0; i < left.size(); ++i)
     {
         left[i] += max_displacement_vector;
     }
@@ -218,4 +137,69 @@ float
 utl::getDistance(const Point& p1, const Point& p2)
 {
     return std::sqrt(std::pow(p1.x - p2.x, 2) + std::pow(p1.y - p2.y, 2));
+}
+
+sf::Vector2f
+utl::getDisplacementVector(std::vector<Point>& first,
+                           const sf::Vector2f& direction,
+                           std::vector<Point>& second)
+{
+    auto first_points_count  = first.size();
+    auto second_points_count = second.size();
+    float max_distance       = std::numeric_limits<float>::min();
+
+    sf::Vector2f max_displacement_vector = {0, 0};
+
+    bool flag_was_intersection = false;
+
+    for (int i = 0; i < first_points_count - 1; ++i)
+    {
+        // build the ray in the opposite direction
+        Section ray = utl::getCounterDirectionalRay(direction, first[i]);
+
+        int intersections_count = 0;
+
+        float max_local_distance = 0;
+
+        Point intersection_point_with_max_distance;
+
+        // check borders
+        for (int j = 0; j < second_points_count - 1; ++j)
+        {
+            float distance;
+            Section border = {second[j], second[j + 1]};
+
+            auto intersection_point = isIntersect(border, ray);
+
+            if (intersection_point.has_value())
+            {
+                distance = getDistance(first[i], *intersection_point);
+                if (max_local_distance < distance)
+                {
+                    max_local_distance = distance;
+
+                    intersection_point_with_max_distance = *intersection_point;
+                }
+                ++intersections_count;
+            }
+        }
+        // odd intersections => point in the polygon
+        if (intersections_count > 0)
+        {
+            if (max_distance < max_local_distance)
+            {
+                max_distance = max_local_distance;
+
+                max_displacement_vector = {
+                    intersection_point_with_max_distance.x - first[i].x,
+                    intersection_point_with_max_distance.y - first[i].y};
+            }
+        }
+        if (intersections_count % 2 == 1)
+        {
+            flag_was_intersection = true;
+        }
+    }
+
+    return flag_was_intersection ? max_displacement_vector : sf::Vector2f(0, 0);
 }
