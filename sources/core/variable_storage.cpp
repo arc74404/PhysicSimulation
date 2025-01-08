@@ -3,9 +3,9 @@
 core::VariableStorage::VariableStorage()
 {
     m_floats["points_frequency"]        = 2.f;
-    m_floats["acceleration_of_gravity"] = 9.8f;
+    m_floats["acceleration_of_gravity"] = 10.f;
 
-    m_ints["pixels_per_metr"] = 20;
+    m_ints["pixels_per_metr"] = 50;
 }
 
 core::VariableStorage&

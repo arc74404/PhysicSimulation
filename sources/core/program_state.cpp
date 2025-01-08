@@ -8,6 +8,7 @@
 core::ProgramState::ProgramState() noexcept
 {
     m_is_alive = true;
+    m_is_pause = true;
 
     sml::Simulation& simulation = sml::Simulation::getInstance();
     auto& const_objects_data    = simulation.getObjectsData(false);
@@ -59,15 +60,21 @@ core::ProgramState::handleEvents()
         m_is_alive = false;
         window.close();
     }
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
+    {
+        m_is_pause = false;
+    }
 }
 
 void
 core::ProgramState::update()
 {
+    handleEvents();
+
     float time_as_seconds = m_clock.restart().asSeconds();
 
-    handleEvents();
     sml::Simulation::getInstance().update(time_as_seconds);
+
     updateGraphics();
 }
 

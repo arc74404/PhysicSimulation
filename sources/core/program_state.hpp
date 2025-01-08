@@ -30,6 +30,7 @@ private:
     std::unordered_map<int, gui::Figure> m_const_figures;
 
     bool m_is_alive;
+    bool m_is_pause;
 
     sf::Clock m_clock;
 };

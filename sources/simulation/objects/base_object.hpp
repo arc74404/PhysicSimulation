@@ -7,6 +7,8 @@
 
 #include "simulation/borders/base_border.hpp"
 
+#include "bounds.hpp"
+
 namespace sml
 {
 using BaseBorderPtr = std::shared_ptr<sml::BaseBorder>;
@@ -24,11 +26,12 @@ public:
 
     BaseObject(FormType upd_status) noexcept;
 
-    static void handleCollision(std::shared_ptr<BaseObject> left,
-                                std::shared_ptr<BaseObject> right,
-                                bool is_right_const = false) noexcept;
+    void handleCollision(std::shared_ptr<BaseObject> other,
+                         bool is_right_const = false) noexcept;
 
-    void update(float time) noexcept;
+    void updateSpecifications(float time) noexcept;
+
+    void updatePointsPosition();
 
     const std::vector<Point>& getPoints() const noexcept;
 
@@ -36,20 +39,23 @@ protected:
     void addBorder(const BaseBorderPtr& border, bool is_final_border = false);
     void addPoint(const Point& point, bool is_final_point = false);
 
+    bool isBoundsIntersect(const std::shared_ptr<BaseObject> other);
+
     void deleteAllPoints() noexcept;
 
     virtual void setPosition(const Point& pos);
+    void movePosition(const sf::Vector2f& vec);
 
 private:
-    float getRight() const noexcept;
-    float getBottom() const noexcept;
-    float getLeft() const noexcept;
-    float getTop() const noexcept;
+    Bounds getBounds() const noexcept;
 
+    void findBounds();
     void findMassCenter();
     void findMass();
 
     void allign();
+
+    Bounds m_bounds;
 
     sf::Vector2f m_speed;
 
@@ -64,5 +70,8 @@ private:
 
     FormType m_form_type;
 };
+
+using BaseObjectPtr = std::shared_ptr<BaseObject>;
+
 } // namespace sml
 #endif // !BASE_OBJECT_HPP

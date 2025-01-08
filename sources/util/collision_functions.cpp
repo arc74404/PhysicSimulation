@@ -4,9 +4,9 @@
 
 #include "extra_math_functions.hpp"
 
-void
-utl::allign(std::vector<Point>& left, const sf::Vector2f& left_direction,
-            std::vector<Point>& right)
+sf::Vector2f
+utl::allignVector(std::vector<Point>& left, const sf::Vector2f& left_direction,
+                  std::vector<Point>& right)
 {
     left.emplace_back(left[0]);
     right.emplace_back(right[0]);
@@ -18,6 +18,7 @@ utl::allign(std::vector<Point>& left, const sf::Vector2f& left_direction,
         getDisplacementVector(right, left_direction, left, false);
 
     sf::Vector2f max_displacement_vector;
+
     if (getDistance(Point(0, 0), max_displacement_vector_l) >
         getDistance(Point(0, 0), max_displacement_vector_r))
     {
@@ -31,10 +32,7 @@ utl::allign(std::vector<Point>& left, const sf::Vector2f& left_direction,
     left.erase(left.end() - 1);
     right.erase(right.end() - 1);
 
-    for (int i = 0; i < left.size(); ++i)
-    {
-        left[i] += max_displacement_vector;
-    }
+    return max_displacement_vector;
 }
 
 std::optional<utl::Point>
@@ -148,9 +146,9 @@ utl::getDistance(const Point& p1, const Point& p2)
 }
 
 sf::Vector2f
-utl::getDisplacementVector(std::vector<Point>& first,
+utl::getDisplacementVector(const std::vector<Point>& first,
                            const sf::Vector2f& direction,
-                           std::vector<Point>& second,
+                           const std::vector<Point>& second,
                            bool is_counter_directional)
 {
     auto first_points_count  = first.size();
@@ -168,9 +166,6 @@ utl::getDisplacementVector(std::vector<Point>& first,
     {
         // build the ray in the opposite direction
         Section ray = getRay(direction, first[i]);
-        // if (is_counter_directional)
-        //     ray = getCounterDirectionalRay(direction, first[i]);
-        // else ray = getDirectionalRay(direction, first[i]);
 
         int intersections_count = 0;
 
