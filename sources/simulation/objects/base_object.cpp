@@ -46,11 +46,11 @@ sml::BaseObject::findBounds()
                                      { return a.x < b.x; })
                         ->x;
     m_bounds.right =
-        std::min_element(m_points.begin(), m_points.end(),
+        std::max_element(m_points.begin(), m_points.end(),
                          [](const Point& a, const Point& b) noexcept
                          { return a.x > b.x; })
             ->x;
-    m_bounds.top = std::min_element(m_points.begin(), m_points.end(),
+    m_bounds.top = std::max_element(m_points.begin(), m_points.end(),
                                     [](const Point& a, const Point& b) noexcept
                                     { return a.y > b.y; })
                        ->y;
@@ -94,6 +94,7 @@ sml::BaseObject::addBorder(const BaseBorderPtr& b, bool is_final_border)
             }
         }
         else m_points.emplace_back(m_points[0]);
+
         findBounds();
         allign();
         findMassCenter();
@@ -111,6 +112,7 @@ sml::BaseObject::addPoint(const Point& point, bool is_final_point)
     if (is_final_point)
     {
         m_points.emplace_back(m_points[0]);
+
         findBounds();
         allign();
         findMassCenter();
@@ -129,7 +131,7 @@ sml::BaseObject::updatePointsPosition()
 }
 
 void
-sml::BaseObject::movePosition(const sf::Vector2f& vec)
+sml::BaseObject::move(const sf::Vector2f& vec)
 {
     m_position += vec;
 
@@ -137,14 +139,15 @@ sml::BaseObject::movePosition(const sf::Vector2f& vec)
     m_bounds.right += vec.x;
     m_bounds.top += vec.y;
     m_bounds.bottom += vec.y;
+
+    updatePointsPosition();
 }
 
 void
 sml::BaseObject::setPosition(const Point& pos)
 {
     sf::Vector2f move_vec = pos - m_position;
-
-    movePosition(move_vec);
+    move(move_vec);
 }
 
 void
@@ -158,7 +161,7 @@ sml::BaseObject::updateSpecifications(float time) noexcept
     m_speed.x += (f.acceleration.x * time * pixels_per_metr);
     m_speed.y += (f.acceleration.y * time * pixels_per_metr);
 
-    movePosition({m_speed.x * time, m_speed.y * time});
+    move({m_speed.x * time, m_speed.y * time});
 }
 
 bool
@@ -183,19 +186,13 @@ void
 sml::BaseObject::handleCollision(std::shared_ptr<BaseObject> other,
                                  bool is_right_const) noexcept
 {
-    if (true)
-    {
-        auto allign_vector =
-            utl::allignVector(this->m_points_with_position, this->m_speed,
-                              other->m_points_with_position);
+    auto allign_vector =
+        utl::allignVector(this->m_points_with_position, this->m_speed,
+                          other->m_points_with_position);
 
-        if (allign_vector.x != 0 || allign_vector.y != 0)
-        {
-            std::cout << allign_vector.y << '\n';
-            int wioehf = 0;
-            wioehf++;
-            movePosition(allign_vector);
-        }
+    if (allign_vector.x != 0 || allign_vector.y != 0)
+    {
+        move(allign_vector);
     }
 }
 

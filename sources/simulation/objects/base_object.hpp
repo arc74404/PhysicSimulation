@@ -44,7 +44,7 @@ protected:
     void deleteAllPoints() noexcept;
 
     virtual void setPosition(const Point& pos);
-    void movePosition(const sf::Vector2f& vec);
+    void move(const sf::Vector2f& vec);
 
 private:
     Bounds getBounds() const noexcept;
