@@ -33,28 +33,36 @@ sml::BaseObject::deleteAllPoints() noexcept
 }
 
 sml::Bounds
-sml::BaseObject::getBounds() const noexcept
+sml::BaseObject::getLocalBounds() const noexcept
 {
-    return m_bounds;
+    return m_local_bounds;
+}
+
+sml::Bounds
+sml::BaseObject::getGlobalBounds() const noexcept
+{
+    return m_global_bounds;
 }
 
 void
-sml::BaseObject::findBounds()
+sml::BaseObject::findLocalBounds() noexcept
 {
-    m_bounds.left = std::min_element(m_points.begin(), m_points.end(),
-                                     [](const Point& a, const Point& b) noexcept
-                                     { return a.x < b.x; })
-                        ->x;
-    m_bounds.right =
-        std::max_element(m_points.begin(), m_points.end(),
+    m_local_bounds.left =
+        std::min_element(m_points.begin(), m_points.end(),
+                         [](const Point& a, const Point& b) noexcept
+                         { return a.x < b.x; })
+            ->x;
+    m_local_bounds.right =
+        std::min_element(m_points.begin(), m_points.end(),
                          [](const Point& a, const Point& b) noexcept
                          { return a.x > b.x; })
             ->x;
-    m_bounds.top = std::max_element(m_points.begin(), m_points.end(),
-                                    [](const Point& a, const Point& b) noexcept
-                                    { return a.y > b.y; })
-                       ->y;
-    m_bounds.bottom =
+    m_local_bounds.top =
+        std::min_element(m_points.begin(), m_points.end(),
+                         [](const Point& a, const Point& b) noexcept
+                         { return a.y > b.y; })
+            ->y;
+    m_local_bounds.bottom =
         std::min_element(m_points.begin(), m_points.end(),
                          [](const Point& a, const Point& b) noexcept
                          { return a.y < b.y; })
@@ -62,16 +70,37 @@ sml::BaseObject::findBounds()
 }
 
 void
-sml::BaseObject::allign()
+sml::BaseObject::findGlobalBounds() noexcept
 {
-    float x_shift = getBounds().left;
-    float y_shift = getBounds().bottom;
+    m_global_bounds.left   = m_local_bounds.left + m_position.x;
+    m_global_bounds.right  = m_local_bounds.right + m_position.x;
+    m_global_bounds.top    = m_local_bounds.top + m_position.y;
+    m_global_bounds.bottom = m_local_bounds.bottom + m_position.y;
+}
+
+void
+sml::BaseObject::allignPoints()
+{
+    findLocalBounds();
+    float x_shift = getLocalBounds().left;
+    float y_shift = getLocalBounds().bottom;
+
+    m_local_bounds.move(-x_shift, -y_shift);
 
     for (auto& p : m_points)
     {
         p.x -= x_shift;
         p.y -= y_shift;
     }
+}
+
+void
+sml::BaseObject::createObject()
+{
+    allignPoints();
+    findGlobalBounds();
+    findMassCenter();
+    findMass();
 }
 
 void
@@ -95,10 +124,7 @@ sml::BaseObject::addBorder(const BaseBorderPtr& b, bool is_final_border)
         }
         else m_points.emplace_back(m_points[0]);
 
-        findBounds();
-        allign();
-        findMassCenter();
-        findMass();
+        createObject();
 
         m_points_with_position = m_points;
     }
@@ -113,10 +139,7 @@ sml::BaseObject::addPoint(const Point& point, bool is_final_point)
     {
         m_points.emplace_back(m_points[0]);
 
-        findBounds();
-        allign();
-        findMassCenter();
-        findMass();
+        createObject();
         m_points_with_position = m_points;
     }
 }
@@ -135,10 +158,7 @@ sml::BaseObject::move(const sf::Vector2f& vec)
 {
     m_position += vec;
 
-    m_bounds.left += vec.x;
-    m_bounds.right += vec.x;
-    m_bounds.top += vec.y;
-    m_bounds.bottom += vec.y;
+    m_global_bounds.move(vec);
 
     updatePointsPosition();
 }
@@ -146,8 +166,10 @@ sml::BaseObject::move(const sf::Vector2f& vec)
 void
 sml::BaseObject::setPosition(const Point& pos)
 {
-    sf::Vector2f move_vec = pos - m_position;
-    move(move_vec);
+    m_position = pos;
+
+    findGlobalBounds();
+    updatePointsPosition();
 }
 
 void
@@ -164,36 +186,40 @@ sml::BaseObject::updateSpecifications(float time) noexcept
     move({m_speed.x * time, m_speed.y * time});
 }
 
-bool
-sml::BaseObject::isBoundsIntersect(const sml::BaseObjectPtr other)
+void
+sml::BaseObject::printGlobalBounds()
 {
-    sf::IntRect rect1;
-    rect1.top    = this->m_bounds.top;
-    rect1.left   = this->m_bounds.left;
-    rect1.width  = this->m_bounds.right - this->m_bounds.left;
-    rect1.height = this->m_bounds.top - this->m_bounds.bottom;
-
-    sf::IntRect rect2;
-    rect2.top    = other->m_bounds.top;
-    rect2.left   = other->m_bounds.left;
-    rect2.width  = other->m_bounds.right - other->m_bounds.left;
-    rect2.height = other->m_bounds.top - other->m_bounds.bottom;
-
-    return rect1.intersects(rect2);
+    std::cout << "--------------------\n";
+    std::cout << "Left: " << m_global_bounds.left << '\n';
+    std::cout << "Right: " << m_global_bounds.right << '\n';
+    std::cout << "Top: " << m_global_bounds.top << '\n';
+    std::cout << "Bottom: " << m_global_bounds.bottom << '\n';
+    std::cout << "--------------------\n";
 }
 
-void
+bool
 sml::BaseObject::handleCollision(std::shared_ptr<BaseObject> other,
                                  bool is_right_const) noexcept
 {
-    auto allign_vector =
-        utl::allignVector(this->m_points_with_position, this->m_speed,
-                          other->m_points_with_position);
+    bool was_collision = false;
 
-    if (allign_vector.x != 0 || allign_vector.y != 0)
+    if (this->m_global_bounds.intersects(other->m_global_bounds))
     {
-        move(allign_vector);
+
+        auto allign_vector =
+            utl::allignVector(this->m_points_with_position, this->m_speed,
+                              other->m_points_with_position);
+
+        if (allign_vector.x != 0 || allign_vector.y != 0)
+        {
+            move(allign_vector);
+            was_collision = true;
+            // print_bounds(this->m_global_bounds);
+            // print_bounds(other->m_global_bounds);
+        }
     }
+
+    return was_collision;
 }
 
 const std::vector<sml::Point>&

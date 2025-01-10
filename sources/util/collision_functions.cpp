@@ -8,9 +8,6 @@ sf::Vector2f
 utl::allignVector(std::vector<Point>& left, const sf::Vector2f& left_direction,
                   std::vector<Point>& right)
 {
-    left.emplace_back(left[0]);
-    right.emplace_back(right[0]);
-
     sf::Vector2f max_displacement_vector_l =
         getDisplacementVector(left, left_direction, right, true);
 
@@ -28,9 +25,6 @@ utl::allignVector(std::vector<Point>& left, const sf::Vector2f& left_direction,
     {
         max_displacement_vector = max_displacement_vector_r;
     }
-
-    left.erase(left.end() - 1);
-    right.erase(right.end() - 1);
 
     return max_displacement_vector;
 }

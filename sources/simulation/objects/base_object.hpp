@@ -26,7 +26,9 @@ public:
 
     BaseObject(FormType upd_status) noexcept;
 
-    void handleCollision(std::shared_ptr<BaseObject> other,
+    void printGlobalBounds();
+
+    bool handleCollision(std::shared_ptr<BaseObject> other,
                          bool is_right_const = false) noexcept;
 
     void updateSpecifications(float time) noexcept;
@@ -39,23 +41,24 @@ protected:
     void addBorder(const BaseBorderPtr& border, bool is_final_border = false);
     void addPoint(const Point& point, bool is_final_point = false);
 
-    bool isBoundsIntersect(const std::shared_ptr<BaseObject> other);
-
     void deleteAllPoints() noexcept;
 
     virtual void setPosition(const Point& pos);
     void move(const sf::Vector2f& vec);
+    void createObject();
 
 private:
-    Bounds getBounds() const noexcept;
+    Bounds getLocalBounds() const noexcept;
+    Bounds getGlobalBounds() const noexcept;
 
-    void findBounds();
+    void findGlobalBounds() noexcept;
+    void findLocalBounds() noexcept;
     void findMassCenter();
     void findMass();
+    void allignPoints();
 
-    void allign();
-
-    Bounds m_bounds;
+    Bounds m_local_bounds;
+    Bounds m_global_bounds;
 
     sf::Vector2f m_speed;
 
