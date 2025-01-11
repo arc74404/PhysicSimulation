@@ -44,13 +44,14 @@ protected:
     void deleteAllPoints() noexcept;
 
     virtual void setPosition(const Point& pos);
-    void move(const sf::Vector2f& vec);
+
     void createObject();
 
 private:
     Bounds getLocalBounds() const noexcept;
     Bounds getGlobalBounds() const noexcept;
 
+    void move(const sf::Vector2f& vec);
     void findGlobalBounds() noexcept;
     void findLocalBounds() noexcept;
     void findMassCenter();

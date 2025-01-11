@@ -205,17 +205,14 @@ sml::BaseObject::handleCollision(std::shared_ptr<BaseObject> other,
 
     if (this->m_global_bounds.intersects(other->m_global_bounds))
     {
+        auto collision_data = utl::CollisionHandler::getCollisionData(
+            this->m_points_with_position, this->m_speed,
+            other->m_points_with_position);
 
-        auto allign_vector =
-            utl::allignVector(this->m_points_with_position, this->m_speed,
-                              other->m_points_with_position);
-
-        if (allign_vector.x != 0 || allign_vector.y != 0)
+        if (collision_data.has_value())
         {
-            move(allign_vector);
+            move(collision_data->allign_vector);
             was_collision = true;
-            // print_bounds(this->m_global_bounds);
-            // print_bounds(other->m_global_bounds);
         }
     }
 

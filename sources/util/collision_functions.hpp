@@ -8,13 +8,24 @@
 
 namespace utl
 {
+
 using Point = sf::Vector2f;
 
 using Section = std::pair<Point, Point>;
 
-sf::Vector2f
-allignVector(std::vector<Point>& left, const sf::Vector2f& left_direction,
-             std::vector<Point>& right);
+namespace CollisionHandler
+{
+
+struct CollisionData
+{
+    sf::Vector2f allign_vector;
+    sf::Vector2f impulse_direction;
+};
+
+std::optional<CollisionData>
+getCollisionData(const std::vector<Point>& left,
+                 const sf::Vector2f& left_direction,
+                 const std::vector<Point>& right);
 
 std::optional<Point>
 getIntersection(const Section& left, const Section& right) noexcept;
@@ -31,11 +42,12 @@ getCounterDirectionalRay(const sf::Vector2f& direction, const Point& p);
 float
 getDistance(const Point& p1, const Point& p2);
 
-sf::Vector2f
-getDisplacementVector(const std::vector<Point>& first,
-                      const sf::Vector2f& direction,
-                      const std::vector<Point>& second,
-                      bool is_counter_directional);
+std::optional<CollisionData>
+getCollisionData(const std::vector<Point>& first, const sf::Vector2f& direction,
+                 const std::vector<Point>& second, bool is_counter_directional);
+
+}; // namespace CollisionHandler
+
 } // namespace utl
 
 #endif // COLLISION_FUNCTIONS_HPP

@@ -4,33 +4,45 @@
 
 #include "extra_math_functions.hpp"
 
-sf::Vector2f
-utl::allignVector(std::vector<Point>& left, const sf::Vector2f& left_direction,
-                  std::vector<Point>& right)
+std::optional<utl::CollisionHandler::CollisionData>
+utl::CollisionHandler::getCollisionData(const std::vector<Point>& left,
+                                        const sf::Vector2f& left_direction,
+                                        const std::vector<Point>& right)
 {
-    sf::Vector2f max_displacement_vector_l =
-        getDisplacementVector(left, left_direction, right, true);
+    std::optional<CollisionData> result;
 
-    sf::Vector2f max_displacement_vector_r =
-        getDisplacementVector(right, left_direction, left, false);
+    auto left_handle = getCollisionData(left, left_direction, right, true);
+
+    auto right_handle = getCollisionData(right, left_direction, left, false);
 
     sf::Vector2f max_displacement_vector;
-
-    if (getDistance(Point(0, 0), max_displacement_vector_l) >
-        getDistance(Point(0, 0), max_displacement_vector_r))
+    if (left_handle.has_value() && !right_handle.has_value())
     {
-        max_displacement_vector = max_displacement_vector_l;
+        result = left_handle;
     }
-    else
+    else if (right_handle.has_value() && !left_handle.has_value())
     {
-        max_displacement_vector = max_displacement_vector_r;
+        result = right_handle;
+    }
+    else if (left_handle.has_value() && right_handle.has_value())
+    {
+        if (getDistance(Point(0, 0), right_handle.operator*().allign_vector) >
+            getDistance(Point(0, 0), left_handle.operator*().allign_vector))
+        {
+            result = right_handle;
+        }
+        else
+        {
+            result = left_handle;
+        }
     }
 
-    return max_displacement_vector;
+    return result;
 }
 
 std::optional<utl::Point>
-utl::getIntersection(const Section& left, const Section& right) noexcept
+utl::CollisionHandler::getIntersection(const Section& left,
+                                       const Section& right) noexcept
 {
     std::optional<Point> res;
     Point p;
@@ -83,7 +95,7 @@ utl::getIntersection(const Section& left, const Section& right) noexcept
 }
 
 std::optional<utl::Point>
-utl::isIntersect(Section left, Section right)
+utl::CollisionHandler::isIntersect(Section left, Section right)
 {
     auto res = getIntersection(left, right);
 
@@ -116,7 +128,8 @@ utl::isIntersect(Section left, Section right)
 }
 
 utl::Section
-utl::getCounterDirectionalRay(const sf::Vector2f& direction, const Point& p)
+utl::CollisionHandler::getCounterDirectionalRay(const sf::Vector2f& direction,
+                                                const Point& p)
 {
     Section res;
     res.first  = p;
@@ -125,7 +138,8 @@ utl::getCounterDirectionalRay(const sf::Vector2f& direction, const Point& p)
 }
 
 utl::Section
-utl::getDirectionalRay(const sf::Vector2f& direction, const Point& p)
+utl::CollisionHandler::getDirectionalRay(const sf::Vector2f& direction,
+                                         const Point& p)
 {
     Section res;
     res.first  = p;
@@ -134,17 +148,20 @@ utl::getDirectionalRay(const sf::Vector2f& direction, const Point& p)
 }
 
 float
-utl::getDistance(const Point& p1, const Point& p2)
+utl::CollisionHandler::getDistance(const Point& p1, const Point& p2)
 {
     return std::sqrt(std::pow(p1.x - p2.x, 2) + std::pow(p1.y - p2.y, 2));
 }
 
-sf::Vector2f
-utl::getDisplacementVector(const std::vector<Point>& first,
-                           const sf::Vector2f& direction,
-                           const std::vector<Point>& second,
-                           bool is_counter_directional)
+std::optional<utl::CollisionHandler::CollisionData>
+utl::CollisionHandler::getCollisionData(const std::vector<Point>& first,
+                                        const sf::Vector2f& direction,
+                                        const std::vector<Point>& second,
+                                        bool is_counter_directional)
 {
+
+    std::optional<CollisionData> result;
+
     auto first_points_count  = first.size();
     auto second_points_count = second.size();
     float max_distance       = std::numeric_limits<float>::min();
@@ -152,7 +169,10 @@ utl::getDisplacementVector(const std::vector<Point>& first,
     auto* getRay =
         is_counter_directional ? getCounterDirectionalRay : getDirectionalRay;
 
-    sf::Vector2f max_displacement_vector = {0, 0};
+    CollisionData collision_data = {
+        {0, 0},
+        {0, 0}
+    };
 
     bool flag_was_intersection = false;
 
@@ -194,7 +214,7 @@ utl::getDisplacementVector(const std::vector<Point>& first,
             {
                 max_distance = max_local_distance;
 
-                max_displacement_vector = {
+                collision_data.allign_vector = {
                     intersection_point_with_max_distance.x - first[i].x,
                     intersection_point_with_max_distance.y - first[i].y};
             }
@@ -206,9 +226,13 @@ utl::getDisplacementVector(const std::vector<Point>& first,
     }
     if (!is_counter_directional)
     {
-        max_displacement_vector.x *= -1.f;
-        max_displacement_vector.y *= -1.f;
+        collision_data.allign_vector.x *= -1.f;
+        collision_data.allign_vector.y *= -1.f;
+    }
+    if (flag_was_intersection)
+    {
+        result.emplace(collision_data);
     }
 
-    return flag_was_intersection ? max_displacement_vector : sf::Vector2f(0, 0);
+    return result;
 }
