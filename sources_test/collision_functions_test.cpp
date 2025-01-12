@@ -4,26 +4,37 @@
 #include "util/extra_math_functions.hpp"
 
 void
-getIntersectionTest(utl::Section sec1, utl::Section sec2,
-                    utl::Point correct_point)
+getIntersectionTest(const utl::Section& sec1, const utl::Section& sec2,
+                    const utl::Point& correct_point)
 {
-    auto res = utl::getIntersection(sec1, sec2);
+    auto res = utl::CollisionHandler::getIntersection(sec1, sec2);
     ASSERT_EQ(res.has_value(), true);
     ASSERT_EQ(utl::isPointsEqual(*res, correct_point), true);
 }
 
 void
-isIntersectTest(utl::Section sec1, utl::Section sec2, utl::Point correct_point)
+isIntersectTest(const utl::Section& sec1, const utl::Section& sec2,
+                const utl::Point& correct_point)
 {
-    auto res = utl::isIntersect(sec1, sec2);
+    auto res = utl::CollisionHandler::isIntersect(sec1, sec2);
     ASSERT_EQ(res.has_value(), true);
     ASSERT_EQ(utl::isPointsEqual(*res, correct_point), true);
 }
 
-// Simple tests for UtilGetIntersection
+void
+getReflectionVectorTest(const utl::Section& line, sf::Vector2f direction,
+                        sf::Vector2f correct_result)
+{
+    sf::Vector2f refl_vector =
+        utl::CollisionHandler::getReflectionVector(line, direction);
+
+    ASSERT_EQ(refl_vector, correct_result);
+}
+
+// Simple tests for UtilCollisionHandlerGetIntersection
 //------------------------------------------------------------------------------
 
-TEST(UtilGetIntersection, get_intersection_regular_and_regular)
+TEST(UtilCollisionHandlerGetIntersection, get_intersection_regular_and_regular)
 {
     utl::Section s1, s2;
     s1.first  = {-1.f, 8.f};
@@ -38,7 +49,7 @@ TEST(UtilGetIntersection, get_intersection_regular_and_regular)
     getIntersectionTest(s2, s1, correct_point);
 }
 
-TEST(UtilGetIntersection, get_intersection_parallel)
+TEST(UtilCollisionHandlerGetIntersection, get_intersection_parallel)
 {
     utl::Section s1, s2;
     s1.first  = {0, 7.33f};
@@ -47,13 +58,14 @@ TEST(UtilGetIntersection, get_intersection_parallel)
     s2.first  = {0, -3.191};
     s2.second = {0 - 4.1f, -3.191 - 10.f};
 
-    auto res = utl::getIntersection(s1, s2);
+    auto res = utl::CollisionHandler::getIntersection(s1, s2);
     ASSERT_EQ(res.has_value(), false);
-    res = utl::getIntersection(s2, s1);
+    res = utl::CollisionHandler::getIntersection(s2, s1);
     ASSERT_EQ(res.has_value(), false);
 }
 
-TEST(UtilGetIntersection, get_intersection_perpendicular_and_regular)
+TEST(UtilCollisionHandlerGetIntersection,
+     get_intersection_perpendicular_and_regular)
 {
     utl::Section s1, s2;
     s1.first  = {-2.f, 0.f};
@@ -67,7 +79,8 @@ TEST(UtilGetIntersection, get_intersection_perpendicular_and_regular)
     getIntersectionTest(s2, s1, correct_point);
 }
 
-TEST(UtilGetIntersection, get_intersection_perpendicular_and_perpendicular)
+TEST(UtilCollisionHandlerGetIntersection,
+     get_intersection_perpendicular_and_perpendicular)
 {
     utl::Section s1, s2;
     s1.first  = {-54.3278562f, 0.f};
@@ -76,18 +89,18 @@ TEST(UtilGetIntersection, get_intersection_perpendicular_and_perpendicular)
     s2.first  = {4.f, 72.3672f};
     s2.second = {4.f, -22.f};
 
-    auto res = utl::getIntersection(s1, s2);
+    auto res = utl::CollisionHandler::getIntersection(s1, s2);
     ASSERT_EQ(res.has_value(), false);
 
-    res = utl::getIntersection(s2, s1);
+    res = utl::CollisionHandler::getIntersection(s2, s1);
     ASSERT_EQ(res.has_value(), false);
 }
 
 //------------------------------------------------------------------------------
-// Simple tests for UtilIsIntersect
+// Simple tests for UtilCollisionHandlerIsIntersect
 //------------------------------------------------------------------------------
 
-TEST(UtilIsIntersect, is_intersect_regular_and_regular_true)
+TEST(UtilCollisionHandlerIsIntersect, is_intersect_regular_and_regular_true)
 {
     utl::Section sec1 = {
         {-4.f, 3.f},
@@ -112,7 +125,7 @@ TEST(UtilIsIntersect, is_intersect_regular_and_regular_true)
     isIntersectTest(sec2, sec1, correct_point);
 }
 
-TEST(UtilIsIntersect, is_intersect_regular_and_regular_false)
+TEST(UtilCollisionHandlerIsIntersect, is_intersect_regular_and_regular_false)
 {
     utl::Section sec1 = {
         {-3.f, -3.f},
@@ -122,42 +135,42 @@ TEST(UtilIsIntersect, is_intersect_regular_and_regular_false)
         {2.f, 2.f},
         {1.f, 1.f}
     };
-    auto res = utl::isIntersect(sec1, sec2);
+    auto res = utl::CollisionHandler::isIntersect(sec1, sec2);
     ASSERT_EQ(res.has_value(), false);
 
-    res = utl::isIntersect(sec2, sec1);
+    res = utl::CollisionHandler::isIntersect(sec2, sec1);
     ASSERT_EQ(res.has_value(), false);
 }
 
 //------------------------------------------------------------------------------
-// Simple tests for UtilGetDistance
+// Simple tests for UtilCollisionHandlerGetDistance
 //------------------------------------------------------------------------------
 
-TEST(UtilGetDistance, get_distance_int_coordinates)
+TEST(UtilCollisionHandlerGetDistance, get_distance_int_coordinates)
 {
     utl::Point p1, p2;
 
     p1 = {0.f, 0.f};
     p2 = {4.f, 3.f};
 
-    auto res = utl::getDistance(p1, p2);
+    auto res = utl::CollisionHandler::getDistance(p1, p2);
     ASSERT_EQ(utl::isFloatsEqual(res, 5.f), true);
-    res = utl::getDistance(p2, p1);
+    res = utl::CollisionHandler::getDistance(p2, p1);
     ASSERT_EQ(utl::isFloatsEqual(res, 5.f), true);
     ////////////////////////
     p1  = {-1.f, -1.f};
     p2  = {11.f, 8.f};
-    res = utl::getDistance(p1, p2);
+    res = utl::CollisionHandler::getDistance(p1, p2);
     ASSERT_EQ(utl::isFloatsEqual(res, 15.f), true);
-    res = utl::getDistance(p2, p1);
+    res = utl::CollisionHandler::getDistance(p2, p1);
     ASSERT_EQ(utl::isFloatsEqual(res, 15.f), true);
 }
 
 //------------------------------------------------------------------------------
-// Difficult tests for UtilGetDistance
+// Difficult tests for UtilCollisionHandlerGetDistance
 //------------------------------------------------------------------------------
 
-TEST(UtilGetDistance, get_distance_float_coordinates)
+TEST(UtilCollisionHandlerGetDistance, get_distance_float_coordinates)
 {
     utl::Point p1, p2;
 
@@ -166,27 +179,49 @@ TEST(UtilGetDistance, get_distance_float_coordinates)
 
     float correct_res = std::sqrt(17856349967556372.f) / 250425.f;
 
-    auto res = utl::getDistance(p1, p2);
+    auto res = utl::CollisionHandler::getDistance(p1, p2);
     ASSERT_EQ(utl::isFloatsEqual(res, correct_res, 3), true);
-    res = utl::getDistance(p2, p1);
+    res = utl::CollisionHandler::getDistance(p2, p1);
     ASSERT_EQ(utl::isFloatsEqual(res, correct_res, 3), true);
 }
 
 //------------------------------------------------------------------------------
-// Simple tests for UtilGetCounterDirectionalRay
+// Simple tests for UtilCollisionHandlerGetCounterDirectionalRay
 //------------------------------------------------------------------------------
 
-TEST(UtilGetCounterDirectionalRay, get_counter_directional_ray_int_coordinates)
+TEST(UtilCollisionHandlerGetCounterDirectionalRay,
+     get_counter_directional_ray_int_coordinates)
 {
     sf::Vector2f vec = {4.f, -3.f};
 
     utl::Point p = {-1.f, -2.f};
 
-    utl::Section res = utl::getCounterDirectionalRay(vec, p);
+    utl::Section res = utl::CollisionHandler::getCounterDirectionalRay(vec, p);
 
     utl::Section correct_section;
     correct_section.first  = p;
     correct_section.second = {p.x - 4000.f, p.y + 3000.f};
 
     ASSERT_EQ(res, correct_section);
+}
+
+//------------------------------------------------------------------------------
+// Simple tests for UtilCollisionHandlerGetReflectionVector
+//------------------------------------------------------------------------------
+
+TEST(UtilCollisionHandlerGetReflectionVector,
+     get_reflection_vector_x1_0_y1_0_x1_0_y1_10_line)
+{
+    utl::Section line = {
+        {0,  0},
+        {10, 0}
+    };
+    sf::Vector2f direction      = {4, -3};
+    sf::Vector2f correct_result = {4, 3};
+
+    getReflectionVectorTest(line, direction, correct_result);
+
+    direction      = {4.3, 3.2};
+    correct_result = {4.3, -3.2};
+    getReflectionVectorTest(line, direction, correct_result);
 }

@@ -46,6 +46,19 @@ std::optional<CollisionData>
 getCollisionData(const std::vector<Point>& first, const sf::Vector2f& direction,
                  const std::vector<Point>& second, bool is_counter_directional);
 
+sf::Vector2f
+getNormal(const Section& section);
+
+sf::Vector2f
+getReflectionVector(const Section& section,
+                    const sf::Vector2f& movement_vector);
+
+float
+getScalarProduct(const sf::Vector2f& vec1, const sf::Vector2f& vec2);
+
+sf::Vector2f
+normalize(const sf::Vector2f& vec);
+
 }; // namespace CollisionHandler
 
 } // namespace utl

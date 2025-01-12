@@ -153,13 +153,46 @@ utl::CollisionHandler::getDistance(const Point& p1, const Point& p2)
     return std::sqrt(std::pow(p1.x - p2.x, 2) + std::pow(p1.y - p2.y, 2));
 }
 
+sf::Vector2f
+utl::CollisionHandler::getNormal(const Section& section)
+{
+    return {section.second.y - section.first.y,
+            -(section.second.x - section.first.x)};
+}
+
+sf::Vector2f
+utl::CollisionHandler::normalize(const sf::Vector2f& vec)
+{
+    float length = std::sqrt(vec.x * vec.x + vec.y * vec.y);
+
+    return (length == 0) ? sf::Vector2f({0.f, 0.f})
+                         : sf::Vector2f(vec.x / length, vec.y / length);
+}
+
+float
+utl::CollisionHandler::getScalarProduct(const sf::Vector2f& vec1,
+                                        const sf::Vector2f& vec2)
+{
+    return vec1.x * vec2.x + vec1.y * vec2.y;
+}
+
+sf::Vector2f
+utl::CollisionHandler::getReflectionVector(const Section& section,
+                                           const sf::Vector2f& movement_vector)
+{
+    sf::Vector2f normal = normalize(getNormal(section));
+
+    float dot_product = getScalarProduct(normal, movement_vector);
+
+    return movement_vector - 2 * dot_product * normal;
+}
+
 std::optional<utl::CollisionHandler::CollisionData>
 utl::CollisionHandler::getCollisionData(const std::vector<Point>& first,
                                         const sf::Vector2f& direction,
                                         const std::vector<Point>& second,
                                         bool is_counter_directional)
 {
-
     std::optional<CollisionData> result;
 
     auto first_points_count  = first.size();
@@ -186,6 +219,7 @@ utl::CollisionHandler::getCollisionData(const std::vector<Point>& first,
         float max_local_distance = 0;
 
         Point intersection_point_with_max_distance;
+        Section intersection_border;
 
         // check borders
         for (int j = 0; j < second_points_count - 1; ++j)
@@ -203,11 +237,13 @@ utl::CollisionHandler::getCollisionData(const std::vector<Point>& first,
                     max_local_distance = distance;
 
                     intersection_point_with_max_distance = *intersection_point;
+
+                    intersection_border = border;
                 }
                 ++intersections_count;
             }
         }
-        // odd intersections => point in the polygon
+
         if (intersections_count > 0)
         {
             if (max_distance < max_local_distance)
@@ -217,8 +253,12 @@ utl::CollisionHandler::getCollisionData(const std::vector<Point>& first,
                 collision_data.allign_vector = {
                     intersection_point_with_max_distance.x - first[i].x,
                     intersection_point_with_max_distance.y - first[i].y};
+
+                collision_data.impulse_direction =
+                    getReflectionVector(intersection_border, direction);
             }
         }
+        // odd intersections => point in the polygon
         if (intersections_count % 2 == 1)
         {
             flag_was_intersection = true;
