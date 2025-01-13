@@ -8,7 +8,7 @@ namespace sml
 class NewFormObject : public BaseObject
 {
 public:
-    NewFormObject();
+    NewFormObject(bool is_const);
 
     void addBorder(BaseBorderPtr&& b);
 

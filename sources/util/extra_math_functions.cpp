@@ -15,3 +15,9 @@ utl::isFloatsEqual(float left, float right, int count_digits_after_dot)
     float d = 1 / std::pow(10, count_digits_after_dot);
     return (right - d) < left && left < (right + d);
 }
+
+float
+utl::getLength(const sf::Vector2f& vec)
+{
+    return std::sqrt(std::pow(vec.x, 2) + std::pow(vec.y, 2));
+}

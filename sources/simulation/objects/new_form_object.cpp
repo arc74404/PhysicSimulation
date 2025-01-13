@@ -1,6 +1,7 @@
 #include "new_form_object.hpp"
 
-sml::NewFormObject::NewFormObject() : BaseObject(FormType::NEW)
+sml::NewFormObject::NewFormObject(bool is_const)
+    : BaseObject(FormType::NEW)
 {
 }
 

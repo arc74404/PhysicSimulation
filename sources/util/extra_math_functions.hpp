@@ -26,6 +26,9 @@ isPointsEqual(const utl::Point& left, const utl::Point& right);
 bool
 isFloatsEqual(float left, float right, int count_digits_after_dot = 5);
 
+float
+getLength(const sf::Vector2f& vec);
+
 } // namespace utl
 
 #endif // EXTRA_MATH_FUNCTIONS_HPP

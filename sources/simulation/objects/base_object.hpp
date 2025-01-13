@@ -58,6 +58,8 @@ private:
     void findMass();
     void allignPoints();
 
+    float m_elasticity_coefficient;
+
     Bounds m_local_bounds;
     Bounds m_global_bounds;
 

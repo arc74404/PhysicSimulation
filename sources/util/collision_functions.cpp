@@ -184,7 +184,7 @@ utl::CollisionHandler::getReflectionVector(const Section& section,
 
     float dot_product = getScalarProduct(normal, movement_vector);
 
-    return movement_vector - 2 * dot_product * normal;
+    return normalize(movement_vector - 2 * dot_product * normal);
 }
 
 std::optional<utl::CollisionHandler::CollisionData>
