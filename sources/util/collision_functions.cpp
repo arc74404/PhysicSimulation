@@ -177,11 +177,9 @@ utl::CollisionHandler::getScalarProduct(const sf::Vector2f& vec1,
 }
 
 sf::Vector2f
-utl::CollisionHandler::getReflectionVector(const Section& section,
+utl::CollisionHandler::getReflectionVector(const sf::Vector2f& normal,
                                            const sf::Vector2f& movement_vector)
 {
-    sf::Vector2f normal = normalize(getNormal(section));
-
     float dot_product = getScalarProduct(normal, movement_vector);
 
     return normalize(movement_vector - 2 * dot_product * normal);
@@ -254,8 +252,8 @@ utl::CollisionHandler::getCollisionData(const std::vector<Point>& first,
                     intersection_point_with_max_distance.x - first[i].x,
                     intersection_point_with_max_distance.y - first[i].y};
 
-                collision_data.impulse_direction =
-                    getReflectionVector(intersection_border, direction);
+                collision_data.normal =
+                    normalize(getNormal(intersection_border));
             }
         }
         // odd intersections => point in the polygon

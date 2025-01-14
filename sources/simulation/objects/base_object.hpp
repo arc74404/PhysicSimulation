@@ -52,11 +52,16 @@ private:
     Bounds getGlobalBounds() const noexcept;
 
     void move(const sf::Vector2f& vec);
+
+    //////////
     void findGlobalBounds() noexcept;
     void findLocalBounds() noexcept;
     void findMassCenter();
     void findMass();
     void allignPoints();
+
+    /////////
+    void updateSpeed(const sf::Vector2f& normal, float k);
 
     float m_elasticity_coefficient;
 

@@ -19,7 +19,7 @@ namespace CollisionHandler
 struct CollisionData
 {
     sf::Vector2f allign_vector;
-    sf::Vector2f impulse_direction;
+    sf::Vector2f normal;
 };
 
 std::optional<CollisionData>
@@ -50,7 +50,7 @@ sf::Vector2f
 getNormal(const Section& section);
 
 sf::Vector2f
-getReflectionVector(const Section& section,
+getReflectionVector(const sf::Vector2f& normal,
                     const sf::Vector2f& movement_vector);
 
 float

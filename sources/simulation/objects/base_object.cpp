@@ -201,6 +201,17 @@ sml::BaseObject::printGlobalBounds()
     std::cout << "--------------------\n";
 }
 
+void
+sml::BaseObject::updateSpeed(const sf::Vector2f& normal, float k)
+{
+    auto impulse_direction =
+        utl::CollisionHandler::getReflectionVector(normal, m_speed);
+
+    float this_speed_module = utl::getLength(this->m_speed);
+
+    this->m_speed = impulse_direction * this_speed_module * k;
+}
+
 bool
 sml::BaseObject::handleCollision(std::shared_ptr<BaseObject> other,
                                  bool is_right_const) noexcept
@@ -218,26 +229,11 @@ sml::BaseObject::handleCollision(std::shared_ptr<BaseObject> other,
             move(collision_data->allign_vector);
             was_collision = true;
 
-            float other_speed_module = utl::getLength(other->m_speed);
-            float this_speed_module  = utl::getLength(this->m_speed);
+            updateSpeed(collision_data->normal, 0.5);
 
-            // v1f = ((m1-m2) * v1i + 2 * m2 * v2i) / (m1 + m2)
-            if (is_right_const)
+            if (!is_right_const)
             {
-                this->m_speed =
-                    collision_data->impulse_direction * this_speed_module * other;
-            }
-            else
-            {
-                float this_new_speed_module =
-                    ((this->m_mass - other->m_mass) * this_speed_module +
-                     2 * other->m_mass * other_speed_module) /
-                    (this->m_mass + other->m_mass);
-
-                this->m_speed =
-                    this_new_speed_module * collision_data->impulse_direction;
-
-                // std::cout << m_speed.x << " " << m_speed.y << '\n';
+                other->updateSpeed(collision_data->normal, 50.f);
             }
         }
     }
