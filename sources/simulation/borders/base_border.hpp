@@ -46,6 +46,9 @@ public:
 private:
     BaseType b_type;
 };
+
+using BaseBorderPtr = std::shared_ptr<BaseBorder>;
+
 } // namespace sml
 
 #endif // !BASE_BORDER_HPP

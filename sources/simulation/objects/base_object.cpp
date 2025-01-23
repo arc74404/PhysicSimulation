@@ -32,15 +32,16 @@ sml::BaseObject::findMass()
 void
 sml::BaseObject::deleteAllPoints() noexcept
 {
-    m_points.clear();
-    m_points_with_position.clear();
+    PointsStorage::clear();
+    m_global_points.clear();
+    m_global_bounds.update(m_global_points);
 }
 
-sml::Bounds
-sml::BaseObject::getLocalBounds() const noexcept
-{
-    return m_local_bounds;
-}
+// sml::Bounds
+// sml::BaseObject::getLocalBounds() const noexcept
+// {
+//     return m_local_bounds;
+// }
 
 sml::Bounds
 sml::BaseObject::getGlobalBounds() const noexcept
@@ -49,54 +50,26 @@ sml::BaseObject::getGlobalBounds() const noexcept
 }
 
 void
-sml::BaseObject::findLocalBounds() noexcept
+sml::BaseObject::updGlobalBounds() noexcept
 {
-    m_local_bounds.left =
-        std::min_element(m_points.begin(), m_points.end(),
-                         [](const Point& a, const Point& b) noexcept
-                         { return a.x < b.x; })
-            ->x;
-    m_local_bounds.right =
-        std::min_element(m_points.begin(), m_points.end(),
-                         [](const Point& a, const Point& b) noexcept
-                         { return a.x > b.x; })
-            ->x;
-    m_local_bounds.top =
-        std::min_element(m_points.begin(), m_points.end(),
-                         [](const Point& a, const Point& b) noexcept
-                         { return a.y > b.y; })
-            ->y;
-    m_local_bounds.bottom =
-        std::min_element(m_points.begin(), m_points.end(),
-                         [](const Point& a, const Point& b) noexcept
-                         { return a.y < b.y; })
-            ->y;
+    PointsStorage::copyWithOffset(m_global_points, m_position);
 }
 
-void
-sml::BaseObject::findGlobalBounds() noexcept
-{
-    m_global_bounds.left   = m_local_bounds.left + m_position.x;
-    m_global_bounds.right  = m_local_bounds.right + m_position.x;
-    m_global_bounds.top    = m_local_bounds.top + m_position.y;
-    m_global_bounds.bottom = m_local_bounds.bottom + m_position.y;
-}
+// void
+// sml::BaseObject::allignPoints()
+// {
+//     findLocalBounds();
+//     float x_shift = getLocalBounds().left;
+//     float y_shift = getLocalBounds().bottom;
 
-void
-sml::BaseObject::allignPoints()
-{
-    findLocalBounds();
-    float x_shift = getLocalBounds().left;
-    float y_shift = getLocalBounds().bottom;
+//     m_local_bounds.move(-x_shift, -y_shift);
 
-    m_local_bounds.move(-x_shift, -y_shift);
-
-    for (auto& p : m_points)
-    {
-        p.x -= x_shift;
-        p.y -= y_shift;
-    }
-}
+//     for (auto& p : m_points)
+//     {
+//         p.x -= x_shift;
+//         p.y -= y_shift;
+//     }
+// }
 
 void
 sml::BaseObject::createObject()
@@ -107,55 +80,14 @@ sml::BaseObject::createObject()
     findMass();
 }
 
-void
-sml::BaseObject::addBorder(const BaseBorderPtr& b, bool is_final_border)
-{
-    auto border_points = b->getPoints();
-
-    m_points.resize(m_points.size() + border_points.size());
-
-    std::copy(border_points.begin(), border_points.end(),
-              m_points.end() - border_points.size());
-
-    if (is_final_border)
-    {
-        if (b->getBaseType() == BaseBorder::BaseType::EQUATION)
-        {
-            if (!std::static_pointer_cast<BaseEquationBorder>(b)->isClosed())
-            {
-                m_points.emplace_back(m_points[0]);
-            }
-        }
-        else m_points.emplace_back(m_points[0]);
-
-        createObject();
-
-        m_points_with_position = m_points;
-    }
-}
-
-void
-sml::BaseObject::addPoint(const Point& point, bool is_final_point)
-{
-    m_points.emplace_back(point);
-
-    if (is_final_point)
-    {
-        m_points.emplace_back(m_points[0]);
-
-        createObject();
-        m_points_with_position = m_points;
-    }
-}
-
-void
-sml::BaseObject::updatePointsPosition()
-{
-    for (int i = 0; i < m_points_with_position.size(); ++i)
-    {
-        m_points_with_position[i] = m_points[i] + m_position;
-    }
-}
+// void
+// sml::BaseObject::updatePointsPosition()
+// {
+//     for (int i = 0; i < m_points_with_position.size(); ++i)
+//     {
+//         m_points_with_position[i] = m_points[i] + m_position;
+//     }
+// }
 
 void
 sml::BaseObject::move(const sf::Vector2f& vec)
