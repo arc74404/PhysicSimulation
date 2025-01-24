@@ -9,25 +9,34 @@ sml::Field::Field()
 {
     CircleObject co(100, {100, -1000});
     m_updatable_objects[0] = std::make_unique<CircleObject>(co);
+    // co.printGlobalBounds();
     //////////////////////////////////////////////////
-    co.setRadius(50);
-    co.setCentre({300, 50});
-    m_updatable_objects[1] = std::make_unique<CircleObject>(co);
+    // co.setRadius(50);
+    // co.setCentre({300, 50});
+    // m_updatable_objects[1] = std::make_unique<CircleObject>(co);
+    // co.printGlobalBounds();
     //////////////////////////////////////////////////
-    co.setRadius(75);
-    co.setCentre({600, 50});
-    m_updatable_objects[2] = std::make_unique<CircleObject>(co);
+    // co.setRadius(75);
+    // co.setCentre({600, 50});
+    // m_updatable_objects[2] = std::make_unique<CircleObject>(co);
+    // co.printGlobalBounds();
     //////////////////////////////////////////////////
-    RectangleObject ro({500, 100}, {1, 500});
-    m_const_objects[0] = std::make_unique<RectangleObject>(ro);
-    //////////////////////////////////////////////////
-    ro.setPosition({1, 1});
-    ro.setSize({50, 300});
-    m_const_objects[1] = std::make_unique<RectangleObject>(ro);
-    //////////////////////////////////////////////////
-    RectangleObject ro2({50, 500}, {400, 1});
-    // ro.printGlobalBounds();
-    m_const_objects[2] = std::make_unique<RectangleObject>(ro2);
+
+    {
+        RectangleObject ro({500, 100}, {1, 500});
+
+        m_const_objects[0] = std::make_unique<RectangleObject>(ro);
+
+        //////////////////////////////////////////////////
+        ro.setPosition({1, 1});
+        ro.setSize({50, 300});
+        m_const_objects[1] = std::make_unique<RectangleObject>(ro);
+        // ro.printGlobalBounds();
+        //////////////////////////////////////////////////
+        RectangleObject ro2({50, 500}, {400, 1});
+
+        // m_const_objects[2] = std::make_unique<RectangleObject>(ro2);
+    }
 }
 
 void

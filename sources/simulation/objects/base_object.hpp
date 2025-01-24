@@ -5,7 +5,7 @@
 
 #include <cstdarg>
 
-#include "simulation/points_storage/points_storage.hpp"
+#include "simulation/points_storage/polygon.hpp"
 
 namespace sml
 {
@@ -13,7 +13,7 @@ using BaseBorderPtr = std::shared_ptr<sml::BaseBorder>;
 
 using Point = sf::Vector2f;
 
-class BaseObject : public PointsStorage
+class BaseObject : public Polygon
 {
 public:
     enum class FormType
@@ -45,7 +45,7 @@ private:
     Bounds getGlobalBounds() const noexcept;
 
     // void updatePointsPosition();
-    void updGlobalBounds() noexcept;
+    void updGlobalPointsAndBounds() noexcept;
     void move(const sf::Vector2f& vec);
 
     //////////

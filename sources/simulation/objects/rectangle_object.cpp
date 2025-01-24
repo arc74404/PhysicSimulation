@@ -15,7 +15,7 @@ sml::RectangleObject::setSize(const sf::Vector2f& size)
     addPoint({0, 0});
     addPoint({size.x, 0});
     addPoint({size.x, size.y});
-    addPoint({0, size.y}, true);
+    addPoint({0, size.y}, true, true);
 }
 
 sml::RectangleObject::RectangleObject() : RectangleObject({0, 0}, {0, 0})

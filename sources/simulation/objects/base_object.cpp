@@ -32,7 +32,7 @@ sml::BaseObject::findMass()
 void
 sml::BaseObject::deleteAllPoints() noexcept
 {
-    PointsStorage::clear();
+    Polygon::clear();
     m_global_points.clear();
     m_global_bounds.update(m_global_points);
 }
@@ -50,9 +50,9 @@ sml::BaseObject::getGlobalBounds() const noexcept
 }
 
 void
-sml::BaseObject::updGlobalBounds() noexcept
+sml::BaseObject::updGlobalPointsAndBounds() noexcept
 {
-    PointsStorage::copyWithOffset(m_global_points, m_position);
+    Polygon::copyWithOffset(m_global_points, m_global_bounds, m_position);
 }
 
 // void
@@ -74,8 +74,8 @@ sml::BaseObject::updGlobalBounds() noexcept
 void
 sml::BaseObject::createObject()
 {
-    allignPoints();
-    findGlobalBounds();
+    // allignPoints();
+    updGlobalPointsAndBounds();
     findMassCenter();
     findMass();
 }
@@ -96,7 +96,7 @@ sml::BaseObject::move(const sf::Vector2f& vec)
 
     m_global_bounds.move(vec);
 
-    updatePointsPosition();
+    updGlobalPointsAndBounds();
 }
 
 void
@@ -104,8 +104,7 @@ sml::BaseObject::setPosition(const Point& pos)
 {
     m_position = pos;
 
-    findGlobalBounds();
-    updatePointsPosition();
+    updGlobalPointsAndBounds();
 }
 
 void
@@ -152,9 +151,9 @@ sml::BaseObject::handleCollision(std::shared_ptr<BaseObject> other,
 
     if (this->m_global_bounds.intersects(other->m_global_bounds))
     {
+        printGlobalBounds();
         auto collision_data = utl::CollisionHandler::getCollisionData(
-            this->m_points_with_position, this->m_speed,
-            other->m_points_with_position);
+            this->m_global_points, this->m_speed, other->m_global_points);
 
         if (collision_data.has_value())
         {
@@ -176,5 +175,5 @@ sml::BaseObject::handleCollision(std::shared_ptr<BaseObject> other,
 const std::vector<sml::Point>&
 sml::BaseObject::getPoints() const noexcept
 {
-    return m_points_with_position;
+    return m_global_points;
 }

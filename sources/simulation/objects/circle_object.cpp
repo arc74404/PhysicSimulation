@@ -22,7 +22,7 @@ sml::CircleObject::setRadius(float r)
 
     CircleBorder circle(r);
 
-    addBorder(std::make_unique<CircleBorder>(circle), true);
+    addBorder(std::make_unique<CircleBorder>(circle), true, true);
 
     setPosition({m_centre.x - m_radius, m_centre.y - m_radius});
 }
