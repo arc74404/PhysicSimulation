@@ -37,7 +37,10 @@ sml::Polygon::addPoint(const Point& point, bool is_final_point, bool allign)
         m_points.emplace_back(m_points[0]);
     }
 
-    if (is_final_point && allign) allignPoints();
+    if (is_final_point && allign)
+    {
+        allignPoints();
+    }
 }
 
 void

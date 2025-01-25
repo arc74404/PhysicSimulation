@@ -5,7 +5,9 @@
 
 #include <cstdarg>
 
-#include "simulation/points_storage/polygon.hpp"
+#include "simulation/polygon/polygon.hpp"
+
+#include "mass.hpp"
 
 namespace sml
 {
@@ -40,34 +42,20 @@ protected:
 
     void createObject();
 
-private:
-    // Bounds getLocalBounds() const noexcept;
-    Bounds getGlobalBounds() const noexcept;
-
-    // void updatePointsPosition();
     void updGlobalPointsAndBounds() noexcept;
+
+private:
     void move(const sf::Vector2f& vec);
 
-    //////////
+    void updateSpeed(const sf::Vector2f& normal);
 
-    void findMassCenter();
-    void findMass();
-    // void allignPoints();
-
-    /////////
-    void updateSpeed(const sf::Vector2f& normal, float k);
-
-    float m_elasticity_coefficient;
-
+    Point m_position;
     Bounds m_global_bounds;
     std::vector<Point> m_global_points;
 
     sf::Vector2f m_speed;
 
-    Point m_position;
-
-    float m_mass;
-    Point m_mass_center;
+    Mass m_mass;
 
     FormType m_form_type;
 };

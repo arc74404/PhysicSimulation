@@ -10,23 +10,9 @@
 #include "util/extra_math_functions.hpp"
 
 sml::BaseObject::BaseObject(FormType form_status) noexcept
-    : m_form_type(form_status), m_speed(0, 0), m_elasticity_coefficient(0.5)
+    : m_form_type(form_status), m_speed(0, 0)
 {
-}
-
-void
-sml::BaseObject::findMassCenter()
-{
-}
-
-void
-sml::BaseObject::findMass()
-{
-    m_mass = 100.f;
-    // if (m_is_const)
-    // {
-    //     m_mass = std::numeric_limits<float>::max();
-    // }
+    m_mass.setWeight(100);
 }
 
 void
@@ -37,57 +23,17 @@ sml::BaseObject::deleteAllPoints() noexcept
     m_global_bounds.update(m_global_points);
 }
 
-// sml::Bounds
-// sml::BaseObject::getLocalBounds() const noexcept
-// {
-//     return m_local_bounds;
-// }
-
-sml::Bounds
-sml::BaseObject::getGlobalBounds() const noexcept
-{
-    return m_global_bounds;
-}
-
 void
 sml::BaseObject::updGlobalPointsAndBounds() noexcept
 {
     Polygon::copyWithOffset(m_global_points, m_global_bounds, m_position);
 }
 
-// void
-// sml::BaseObject::allignPoints()
-// {
-//     findLocalBounds();
-//     float x_shift = getLocalBounds().left;
-//     float y_shift = getLocalBounds().bottom;
-
-//     m_local_bounds.move(-x_shift, -y_shift);
-
-//     for (auto& p : m_points)
-//     {
-//         p.x -= x_shift;
-//         p.y -= y_shift;
-//     }
-// }
-
 void
 sml::BaseObject::createObject()
 {
-    // allignPoints();
     updGlobalPointsAndBounds();
-    findMassCenter();
-    findMass();
 }
-
-// void
-// sml::BaseObject::updatePointsPosition()
-// {
-//     for (int i = 0; i < m_points_with_position.size(); ++i)
-//     {
-//         m_points_with_position[i] = m_points[i] + m_position;
-//     }
-// }
 
 void
 sml::BaseObject::move(const sf::Vector2f& vec)
@@ -110,7 +56,7 @@ sml::BaseObject::setPosition(const Point& pos)
 void
 sml::BaseObject::updateSpecifications(float time) noexcept
 {
-    auto f = sml::forces::gravity(m_mass);
+    auto f = sml::forces::gravity(m_mass.getWeight());
 
     int pixels_per_metr =
         core::VariableStorage::getInstance().getInt("pixels_per_metr");
@@ -133,14 +79,16 @@ sml::BaseObject::printGlobalBounds()
 }
 
 void
-sml::BaseObject::updateSpeed(const sf::Vector2f& normal, float k)
+sml::BaseObject::updateSpeed(const sf::Vector2f& normal)
 {
     auto impulse_direction =
         utl::CollisionHandler::getReflectionVector(normal, m_speed);
 
     float this_speed_module = utl::getLength(this->m_speed);
 
-    this->m_speed = impulse_direction * this_speed_module * k;
+    this->m_speed =
+        impulse_direction * this_speed_module *
+        core::VariableStorage::getInstance().getFloat("elasticity_coefficient");
 }
 
 bool
@@ -151,7 +99,7 @@ sml::BaseObject::handleCollision(std::shared_ptr<BaseObject> other,
 
     if (this->m_global_bounds.intersects(other->m_global_bounds))
     {
-        printGlobalBounds();
+
         auto collision_data = utl::CollisionHandler::getCollisionData(
             this->m_global_points, this->m_speed, other->m_global_points);
 
@@ -160,11 +108,11 @@ sml::BaseObject::handleCollision(std::shared_ptr<BaseObject> other,
             move(collision_data->allign_vector);
             was_collision = true;
 
-            updateSpeed(collision_data->normal, 0.5);
+            updateSpeed(collision_data->normal);
 
             if (!is_right_const)
             {
-                other->updateSpeed(collision_data->normal, 50.f);
+                other->updateSpeed(collision_data->normal);
             }
         }
     }
