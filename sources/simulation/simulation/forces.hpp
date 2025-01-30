@@ -11,18 +11,16 @@ namespace forces
 
 struct Force
 {
+    Force();
     float magnitude;
     sf::Vector2f acceleration;
 };
 
 Force
-gravity(float mass);
+gravity(float mass) noexcept;
 
 Force
-getForce(float mass, float acceleration, const sf::Vector2f& direction_v);
-
-Force
-getForce(float mass, float acceleration, float direction_r);
+counteraction(const Force& grav, float weight, const sf::Vector2f& normal) noexcept;
 
 } // namespace forces
 

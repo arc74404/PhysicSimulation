@@ -161,7 +161,7 @@ utl::CollisionHandler::getNormal(const Section& section)
 }
 
 sf::Vector2f
-utl::CollisionHandler::normalize(const sf::Vector2f& vec)
+utl::CollisionHandler::normalize(const sf::Vector2f& vec) noexcept
 {
     float length = std::sqrt(vec.x * vec.x + vec.y * vec.y);
 
@@ -252,7 +252,7 @@ utl::CollisionHandler::getCollisionData(const std::vector<Point>& first,
                     intersection_point_with_max_distance.x - first[i].x,
                     intersection_point_with_max_distance.y - first[i].y};
 
-                collision_data.normal =
+                collision_data.unit_normal =
                     normalize(getNormal(intersection_border));
             }
         }

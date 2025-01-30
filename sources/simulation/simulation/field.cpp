@@ -20,8 +20,11 @@ sml::Field::Field()
     // co.printGlobalBounds();
     //////////////////////////////////////////////////
 
+    RectangleObject r({70, 70}, {100, 1});
+    m_updatable_objects[3] = std::make_unique<RectangleObject>(r);
+
     {
-        RectangleObject ro({500, 100}, {1, 500});
+        RectangleObject ro({500, 100}, {0, 500});
         m_const_objects[0] = std::make_unique<RectangleObject>(ro);
 
         //////////////////////////////////////////////////

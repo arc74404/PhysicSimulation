@@ -5,7 +5,7 @@
 
 #include "core/variable_storage.hpp"
 #include "simulation/borders/base_equation_border.hpp"
-#include "simulation/simulation/powers.hpp"
+#include "simulation/simulation/forces.hpp"
 #include "util/collision_functions.hpp"
 #include "util/extra_math_functions.hpp"
 
@@ -56,13 +56,24 @@ sml::BaseObject::setPosition(const Point& pos)
 void
 sml::BaseObject::updateSpecifications(float time) noexcept
 {
-    auto f = sml::forces::gravity(m_mass.getWeight());
+    auto gravity_force = sml::forces::gravity(m_mass.getWeight());
+
+    sf::Vector2f result_force = gravity_force.acceleration;
+
+    if (m_collision_normal.has_value())
+    {
+        result_force +=
+            sml::forces::counteraction(gravity_force, m_mass.getWeight(),
+                                       m_collision_normal.value())
+                .acceleration;
+
+        m_collision_normal.reset();
+    }
 
     int pixels_per_metr =
         core::VariableStorage::getInstance().getInt("pixels_per_metr");
 
-    m_speed.x += (f.acceleration.x * time * pixels_per_metr);
-    m_speed.y += (f.acceleration.y * time * pixels_per_metr);
+    m_speed += (result_force * time * float(pixels_per_metr));
 
     move({m_speed.x * time, m_speed.y * time});
 }
@@ -79,10 +90,16 @@ sml::BaseObject::printGlobalBounds()
 }
 
 void
-sml::BaseObject::updateSpeed(const sf::Vector2f& normal)
+sml::BaseObject::updateSpeed(const sf::Vector2f& normal,
+                             const sf::Vector2f& other_speed,
+                             float other_weight)
 {
     auto impulse_direction =
         utl::CollisionHandler::getReflectionVector(normal, m_speed);
+
+    // this->m_speed +=
+    //     impulse_direction * utl::getLength(other_speed) *
+    //     core::VariableStorage::getInstance().getFloat("elasticity_coefficient");
 
     float this_speed_module = utl::getLength(this->m_speed);
 
@@ -105,14 +122,18 @@ sml::BaseObject::handleCollision(std::shared_ptr<BaseObject> other,
 
         if (collision_data.has_value())
         {
+            m_collision_normal.emplace(collision_data->unit_normal);
+
             move(collision_data->allign_vector);
             was_collision = true;
 
-            updateSpeed(collision_data->normal);
+            updateSpeed(collision_data->unit_normal, other->m_speed,
+                        other->m_mass.getWeight());
 
             if (!is_right_const)
             {
-                other->updateSpeed(collision_data->normal);
+                other->updateSpeed(collision_data->unit_normal, this->m_speed,
+                                   this->m_mass.getWeight());
             }
         }
     }

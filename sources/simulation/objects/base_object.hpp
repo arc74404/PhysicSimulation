@@ -47,7 +47,10 @@ protected:
 private:
     void move(const sf::Vector2f& vec);
 
-    void updateSpeed(const sf::Vector2f& normal);
+    void updateSpeed(const sf::Vector2f& normal,
+                     const sf::Vector2f& other_speed, float other_weight);
+
+    std::optional<sf::Vector2f> m_collision_normal;
 
     Point m_position;
     Bounds m_global_bounds;

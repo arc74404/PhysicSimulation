@@ -19,7 +19,7 @@ namespace CollisionHandler
 struct CollisionData
 {
     sf::Vector2f allign_vector;
-    sf::Vector2f normal;
+    sf::Vector2f unit_normal;
 };
 
 std::optional<CollisionData>
@@ -57,7 +57,7 @@ float
 getScalarProduct(const sf::Vector2f& vec1, const sf::Vector2f& vec2);
 
 sf::Vector2f
-normalize(const sf::Vector2f& vec);
+normalize(const sf::Vector2f& vec) noexcept;
 
 }; // namespace CollisionHandler
 
