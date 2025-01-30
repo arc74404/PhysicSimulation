@@ -22,21 +22,19 @@ sml::forces::gravity(float weight) noexcept
 
 sml::forces::Force
 sml::forces::counteraction(const Force& grav, float weight,
-                           const sf::Vector2f& normal) noexcept
+                           const sf::Vector2f& unit_normal) noexcept
 {
     Force res;
 
     res.magnitude = grav.magnitude;
 
-    sf::Vector2f normalize_normal = utl::CollisionHandler::normalize(normal);
-
-    if (normalize_normal.y < 0)
+    if (unit_normal.y < 0)
     {
-        res.acceleration = normalize_normal * res.magnitude / weight;
+        res.acceleration = unit_normal * res.magnitude / weight;
     }
     else
     {
-        res.acceleration = normalize_normal * res.magnitude * -1.f / weight;
+        res.acceleration = unit_normal * res.magnitude * -1.f / weight;
     }
     return res;
 }

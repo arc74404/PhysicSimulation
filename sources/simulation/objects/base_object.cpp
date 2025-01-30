@@ -60,14 +60,14 @@ sml::BaseObject::updateSpecifications(float time) noexcept
 
     sf::Vector2f result_force = gravity_force.acceleration;
 
-    if (m_collision_normal.has_value())
+    if (m_collision_unit_normal.has_value())
     {
         result_force +=
             sml::forces::counteraction(gravity_force, m_mass.getWeight(),
-                                       m_collision_normal.value())
+                                       m_collision_unit_normal.value())
                 .acceleration;
 
-        m_collision_normal.reset();
+        m_collision_unit_normal.reset();
     }
 
     int pixels_per_metr =
@@ -122,7 +122,7 @@ sml::BaseObject::handleCollision(std::shared_ptr<BaseObject> other,
 
         if (collision_data.has_value())
         {
-            m_collision_normal.emplace(collision_data->unit_normal);
+            m_collision_unit_normal.emplace(collision_data->unit_normal);
 
             move(collision_data->allign_vector);
             was_collision = true;
