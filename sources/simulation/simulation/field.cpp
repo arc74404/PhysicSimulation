@@ -35,7 +35,6 @@ sml::Field::Field()
         // ro.printGlobalBounds();
         //////////////////////////////////////////////////
         RectangleObject ro2({50, 500}, {400, 1});
-
         m_const_objects[2] = std::make_unique<RectangleObject>(ro2);
     }
 }

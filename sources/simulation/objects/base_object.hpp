@@ -24,6 +24,8 @@ public:
         PATTERN = 1
     };
 
+    void setWeight(float w);
+
     explicit BaseObject(FormType upd_status) noexcept;
 
     void printGlobalBounds();
@@ -46,6 +48,8 @@ protected:
 
 private:
     void move(const sf::Vector2f& vec);
+
+    void updateSpeed(const sf::Vector2f& normal);
 
     void updateSpeed(const sf::Vector2f& normal,
                      const sf::Vector2f& other_speed, float other_weight);

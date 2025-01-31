@@ -16,6 +16,12 @@ sml::BaseObject::BaseObject(FormType form_status) noexcept
 }
 
 void
+sml::BaseObject::setWeight(float w)
+{
+    m_mass.setWeight(w);
+}
+
+void
 sml::BaseObject::deleteAllPoints() noexcept
 {
     Polygon::clear();
@@ -90,22 +96,41 @@ sml::BaseObject::printGlobalBounds()
 }
 
 void
-sml::BaseObject::updateSpeed(const sf::Vector2f& normal,
-                             const sf::Vector2f& other_speed,
-                             float other_weight)
+sml::BaseObject::updateSpeed(const sf::Vector2f& normal)
 {
     auto impulse_direction =
         utl::CollisionHandler::getReflectionVector(normal, m_speed);
 
-    // this->m_speed +=
-    //     impulse_direction * utl::getLength(other_speed) *
-    //     core::VariableStorage::getInstance().getFloat("elasticity_coefficient");
-
-    float this_speed_module = utl::getLength(this->m_speed);
-
     this->m_speed =
-        impulse_direction * this_speed_module *
+        impulse_direction * utl::getLength(this->m_speed) *
         core::VariableStorage::getInstance().getFloat("elasticity_coefficient");
+}
+
+void
+sml::BaseObject::updateSpeed(const sf::Vector2f& normal,
+                             const sf::Vector2f& other_speed,
+                             float other_weight)
+{
+    // std::vector<double> v1_minus_v2 = subtractVectors(v1, v2);
+    sf::Vector2f v1_minus_v2 = this->m_speed - other_speed;
+
+    // ((v1 - v2) . n)
+    double dot_product_v1_minus_v2_n =
+        utl::CollisionHandler::getScalarProduct(v1_minus_v2, normal);
+
+    // 2 * m2 / (m1 + m2)
+    double scalar_factor =
+        (2.f * other_weight) / (this->m_mass.getWeight() + other_weight);
+
+    // (2 * m2 / (m1 + m2)) * ((v1 - v2) . n)
+    double scalar_term = scalar_factor * dot_product_v1_minus_v2_n;
+
+    // ((2 * m2 / (m1 + m2)) * ((v1 - v2) . n) ) * n
+    sf::Vector2f vector_term = {normal.x * float(scalar_term),
+                                normal.y * float(scalar_term)};
+
+    // u1 = v1 - ((2 * m2 / (m1 + m2)) * (v1 - v2) . n ) * n
+    this->m_speed = this->m_speed - vector_term;
 }
 
 bool
@@ -127,12 +152,15 @@ sml::BaseObject::handleCollision(std::shared_ptr<BaseObject> other,
             move(collision_data->allign_vector);
             was_collision = true;
 
-            updateSpeed(collision_data->unit_normal, other->m_speed,
-                        other->m_mass.getWeight());
-
-            if (!is_right_const)
+            if (is_right_const)
             {
-                other->updateSpeed(collision_data->unit_normal, this->m_speed,
+                updateSpeed(collision_data->unit_normal);
+            }
+            else
+            {
+                updateSpeed(collision_data->unit_normal, other->m_speed,
+                            other->m_mass.getWeight());
+                other->updateSpeed(-collision_data->unit_normal, this->m_speed,
                                    this->m_mass.getWeight());
             }
         }
