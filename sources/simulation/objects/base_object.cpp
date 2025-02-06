@@ -66,14 +66,15 @@ sml::BaseObject::updateSpecifications(float time) noexcept
 
     sf::Vector2f result_force = gravity_force.acceleration;
 
-    if (m_collision_unit_normal.has_value())
+    if (m_collision_context.collision_unit_normal.x != 0 &&
+        m_collision_context.collision_unit_normal.y != 0)
     {
-        result_force +=
-            sml::forces::counteraction(gravity_force, m_mass.getWeight(),
-                                       m_collision_unit_normal.value())
-                .acceleration;
+        result_force += sml::forces::counteraction(
+                            gravity_force, m_mass.getWeight(),
+                            m_collision_context.collision_unit_normal)
+                            .acceleration;
 
-        m_collision_unit_normal.reset();
+        std::cout << result_force.x << '\n' << result_force.y << '\n';
     }
 
     int pixels_per_metr =
@@ -81,7 +82,37 @@ sml::BaseObject::updateSpecifications(float time) noexcept
 
     m_speed += (result_force * time * float(pixels_per_metr));
 
-    move({m_speed.x * time, m_speed.y * time});
+    sf::Vector2f move_vector = m_speed * time;
+
+    m_collision_context.collision_unit_normal = {0.f, 0.f};
+
+    // if (m_collision_context.collision_unit_normal.x != 0 &&
+    //     m_collision_context.collision_unit_normal.y != 0)
+    // {
+    //     sf::Vector2f flip_90_degrees_clock_wise_unit_vector = {
+    //         m_collision_context.collision_unit_normal.y,
+    //         -m_collision_context.collision_unit_normal.x};
+
+    //     sf::Vector2f flip_90_degrees_counter_clock_wise_unit_vector = {
+    //         -m_collision_context.collision_unit_normal.y,
+    //         m_collision_context.collision_unit_normal.x};
+
+    //     float vec_cos = utl::CollisionHandler::getCos(
+    //         m_speed, flip_90_degrees_clock_wise_unit_vector);
+
+    //     if (vec_cos > 0)
+    //     {
+    //         move_vector = flip_90_degrees_clock_wise_unit_vector * vec_cos *
+    //                       utl::getLength(m_speed);
+    //     }
+    //     else
+    //     {
+    //         move_vector = flip_90_degrees_counter_clock_wise_unit_vector *
+    //                       vec_cos * utl::getLength(m_speed);
+    //     }
+    // }
+
+    move(move_vector);
 }
 
 void
@@ -111,25 +142,19 @@ sml::BaseObject::updateSpeed(const sf::Vector2f& normal,
                              const sf::Vector2f& other_speed,
                              float other_weight)
 {
-    // std::vector<double> v1_minus_v2 = subtractVectors(v1, v2);
     sf::Vector2f v1_minus_v2 = this->m_speed - other_speed;
 
-    // ((v1 - v2) . n)
     double dot_product_v1_minus_v2_n =
         utl::CollisionHandler::getScalarProduct(v1_minus_v2, normal);
 
-    // 2 * m2 / (m1 + m2)
     double scalar_factor =
         (2.f * other_weight) / (this->m_mass.getWeight() + other_weight);
 
-    // (2 * m2 / (m1 + m2)) * ((v1 - v2) . n)
     double scalar_term = scalar_factor * dot_product_v1_minus_v2_n;
 
-    // ((2 * m2 / (m1 + m2)) * ((v1 - v2) . n) ) * n
     sf::Vector2f vector_term = {normal.x * float(scalar_term),
                                 normal.y * float(scalar_term)};
 
-    // u1 = v1 - ((2 * m2 / (m1 + m2)) * (v1 - v2) . n ) * n
     this->m_speed = this->m_speed - vector_term;
 }
 
@@ -141,16 +166,16 @@ sml::BaseObject::handleCollision(std::shared_ptr<BaseObject> other,
 
     if (this->m_global_bounds.intersects(other->m_global_bounds))
     {
-
         auto collision_data = utl::CollisionHandler::getCollisionData(
             this->m_global_points, this->m_speed, other->m_global_points);
 
         if (collision_data.has_value())
         {
-            m_collision_unit_normal.emplace(collision_data->unit_normal);
-
             move(collision_data->allign_vector);
             was_collision = true;
+
+            m_collision_context.collision_unit_normal =
+                collision_data->unit_normal;
 
             if (is_right_const)
             {
@@ -162,6 +187,9 @@ sml::BaseObject::handleCollision(std::shared_ptr<BaseObject> other,
                             other->m_mass.getWeight());
                 other->updateSpeed(-collision_data->unit_normal, this->m_speed,
                                    this->m_mass.getWeight());
+
+                // updateSpeed(collision_data->unit_normal);
+                // other->updateSpeed(collision_data->unit_normal);
             }
         }
     }

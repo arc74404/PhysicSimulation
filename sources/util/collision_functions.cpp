@@ -10,33 +10,99 @@ utl::CollisionHandler::getCollisionData(const std::vector<Point>& left,
                                         const std::vector<Point>& right)
 {
     std::optional<CollisionData> result;
+    std::optional<CollisionData> direct_opt;
+    std::optional<CollisionData> counter_direct_opt;
 
-    auto left_handle = getCollisionData(left, left_direction, right, true);
+    auto left_handle_direct =
+        getCollisionData(left, left_direction, right, true);
 
-    auto right_handle = getCollisionData(right, left_direction, left, false);
+    auto right_handle_direct =
+        getCollisionData(right, left_direction, left, false);
+
+    auto left_handle_counter_direct =
+        getCollisionData(left, -left_direction, right, true);
+
+    auto right_handle_counter_direct =
+        getCollisionData(right, -left_direction, left, false);
 
     sf::Vector2f max_displacement_vector;
-    if (left_handle.has_value() && !right_handle.has_value())
+
+    // direct
     {
-        result = left_handle;
-    }
-    else if (right_handle.has_value() && !left_handle.has_value())
-    {
-        result = right_handle;
-    }
-    else if (left_handle.has_value() && right_handle.has_value())
-    {
-        if (getDistance(Point(0, 0), right_handle.operator*().allign_vector) >
-            getDistance(Point(0, 0), left_handle.operator*().allign_vector))
+        if (left_handle_direct.has_value() && !right_handle_direct.has_value())
         {
-            result = right_handle;
+            direct_opt = left_handle_direct;
         }
-        else
+        else if (right_handle_direct.has_value() &&
+                 !left_handle_direct.has_value())
         {
-            result = left_handle;
+            direct_opt = right_handle_direct;
+        }
+        else if (left_handle_direct.has_value() &&
+                 right_handle_direct.has_value())
+        {
+            if (getDistance(Point(0, 0),
+                            right_handle_direct.operator*().allign_vector) >
+                getDistance(Point(0, 0),
+                            left_handle_direct.operator*().allign_vector))
+            {
+                direct_opt = right_handle_direct;
+            }
+            else
+            {
+                direct_opt = left_handle_direct;
+            }
         }
     }
 
+    // counter_direct
+    {
+        if (left_handle_counter_direct.has_value() &&
+            !right_handle_counter_direct.has_value())
+        {
+            counter_direct_opt = left_handle_counter_direct;
+        }
+        else if (right_handle_counter_direct.has_value() &&
+                 !left_handle_counter_direct.has_value())
+        {
+            counter_direct_opt = right_handle_counter_direct;
+        }
+        else if (left_handle_counter_direct.has_value() &&
+                 right_handle_counter_direct.has_value())
+        {
+            if (getDistance(
+                    Point(0, 0),
+                    right_handle_counter_direct.operator*().allign_vector) >
+                getDistance(
+                    Point(0, 0),
+                    left_handle_counter_direct.operator*().allign_vector))
+            {
+                counter_direct_opt = right_handle_counter_direct;
+            }
+            else
+            {
+                counter_direct_opt = left_handle_counter_direct;
+            }
+        }
+    }
+    //
+    if (direct_opt.has_value() && !counter_direct_opt.has_value())
+    {
+        result = direct_opt;
+    }
+    else if (!direct_opt.has_value() && counter_direct_opt.has_value())
+    {
+        result = counter_direct_opt;
+    }
+    else if (direct_opt.has_value() && counter_direct_opt.has_value())
+    {
+        result = (utl::CollisionHandler::getDistance(
+                      Point(0.f, 0.f), direct_opt->allign_vector) <
+                  utl::CollisionHandler::getDistance(
+                      Point(0.f, 0.f), counter_direct_opt->allign_vector))
+                     ? direct_opt
+                     : counter_direct_opt;
+    }
     return result;
 }
 
@@ -273,4 +339,11 @@ utl::CollisionHandler::getCollisionData(const std::vector<Point>& first,
     }
 
     return result;
+}
+
+float
+utl::CollisionHandler::getCos(const sf::Vector2f& vec1,
+                              const sf::Vector2f& vec2)
+{
+    return getScalarProduct(vec1, vec2) / (getLength(vec1) * getLength(vec2));
 }

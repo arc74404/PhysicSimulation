@@ -59,6 +59,9 @@ getScalarProduct(const sf::Vector2f& vec1, const sf::Vector2f& vec2);
 sf::Vector2f
 normalize(const sf::Vector2f& vec) noexcept;
 
+float
+getCos(const sf::Vector2f& vec1, const sf::Vector2f& vec2);
+
 }; // namespace CollisionHandler
 
 } // namespace utl

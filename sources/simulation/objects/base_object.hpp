@@ -7,6 +7,7 @@
 
 #include "simulation/polygon/polygon.hpp"
 
+#include "collision_context.hpp"
 #include "mass.hpp"
 
 namespace sml
@@ -54,7 +55,7 @@ private:
     void updateSpeed(const sf::Vector2f& normal,
                      const sf::Vector2f& other_speed, float other_weight);
 
-    std::optional<sf::Vector2f> m_collision_unit_normal;
+    CollisionContext m_collision_context;
 
     Point m_position;
     Bounds m_global_bounds;

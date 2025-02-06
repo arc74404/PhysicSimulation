@@ -12,7 +12,7 @@ sml::Field::Field()
     //////////////////////////////////////////////////
     co.setCentre({300, -100});
     co.setRadius(50);
-    m_updatable_objects[1] = std::make_unique<CircleObject>(co);
+    // m_updatable_objects[1] = std::make_unique<CircleObject>(co);
     //////////////////////////////////////////////////
     co.setRadius(75);
     co.setCentre({300, 200});
@@ -34,7 +34,7 @@ sml::Field::Field()
 
         // ro.printGlobalBounds();
         //////////////////////////////////////////////////
-        RectangleObject ro2({50, 500}, {400, 1});
+        RectangleObject ro2({50, 500}, {400, -100});
         m_const_objects[2] = std::make_unique<RectangleObject>(ro2);
     }
 }
@@ -51,22 +51,46 @@ sml::Field::update(float time)
     for (auto i = ub; i != ue; ++i)
     {
         i.operator*().second->updateSpecifications(time);
-        auto j = cb;
-
-        bool flag_continue = true;
-
-        for (; j != ce && flag_continue; ++j)
+    }
+    for (auto i = ub; i != ue; ++i)
+    {
+        for (auto j = cb; j != ce; ++j)
         {
-            if (i->second->handleCollision(j->second, true))
-                flag_continue = false;
-        }
-        j = i;
-        j++;
-        for (; j != ue && flag_continue; ++j)
-        {
-            if (i->second->handleCollision(j->second)) flag_continue = false;
+            if (i->second->handleCollision(j->second, true)) break;
         }
     }
+    for (auto i = ub; i != ue; ++i)
+    {
+        auto j = i;
+        ++j;
+        for (; j != ue; ++j)
+        {
+            if (i->second->handleCollision(j->second, true))
+            {
+                i = ub;
+            }
+        }
+    }
+
+    // for (auto i = ub; i != ue; ++i)
+    // {
+    //     i.operator*().second->updateSpecifications(time);
+    //     auto j = cb;
+
+    //     bool flag_continue = true;
+
+    //     for (; j != ce && flag_continue; ++j)
+    //     {
+    //         if (i->second->handleCollision(j->second, true))
+    //             flag_continue = false;
+    //     }
+    //     j = i;
+    //     j++;
+    //     for (; j != ue && flag_continue; ++j)
+    //     {
+    //         if (i->second->handleCollision(j->second)) flag_continue = false;
+    //     }
+    // }
 }
 
 const std::unordered_map<int, sml::BaseObjectPtr>&
