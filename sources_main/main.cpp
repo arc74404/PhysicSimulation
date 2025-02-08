@@ -5,7 +5,7 @@
 #include "core/core.hpp"
 #include "util/collision_functions.hpp"
 
-// #define DEBUGGING_GRAPHICS
+#define DEBUGGING_GRAPHICS
 
 #ifdef DEBUGGING_GRAPHICS
 
@@ -30,8 +30,8 @@ createRect(const std::vector<sf::Vector2f>& vec, sf::Color color)
     float m = 30;
     for (int i = 0; i < vec.size(); ++i)
     {
-        v_arr[i].position.x = vec[i].x * m + 200;
-        v_arr[i].position.y = vec[i].y * m + 200;
+        v_arr[i].position.x = vec[i].x;
+        v_arr[i].position.y = vec[i].y;
         v_arr[i].color      = color;
     }
     return v_arr;
@@ -46,19 +46,20 @@ main()
     app.run();
 #else
     std::vector<sf::Vector2f> left = {
-        {3.6f,  1.28f },
-        {2.34f, -0.67f},
-        {1.89,  1.28f },
-        {1.47,  2.24f },
-        {5.36f, 2.76f }
+        {100, 430.961},
+        {170, 430.961},
+        {170, 500.961},
+        {100, 500.961},
+        {100, 430.961}
     };
     left.emplace_back(left[0]);
 
     std::vector<sf::Vector2f> right = {
-        {1.07308, 3.04178},
-        {3.28594, 1.87554},
-        {0.81594, 0.58257},
-        {0.45757, 0.81028}
+        {0,   500},
+        {500, 500},
+        {500, 600},
+        {0,   600},
+        {0,   500}
     };
     right.emplace_back(right[0]);
 
@@ -82,6 +83,17 @@ main()
 
     sf::Event event;
 
+    sf::View m_view;
+
+    m_view.setCenter(400, 300);
+    m_view.setSize(window.getSize().x, window.getSize().y);
+
+    m_view.zoom(2);
+
+    window.setView(m_view);
+
+    window.setFramerateLimit(80);
+
     // Start the game loop
     while (window.isOpen())
     {
@@ -90,14 +102,6 @@ main()
         {
             // Close window: exit
             if (sf::Mouse::isButtonPressed(sf::Mouse::Right)) window.close();
-            if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
-            {
-                utl::allign(left, left_direction, right);
-                // std::cout << "----- Allign -----\n";
-                // printVector(left);
-
-                v_arr_left = createRect(left, sf::Color::Red);
-            }
         }
 
         window.clear();

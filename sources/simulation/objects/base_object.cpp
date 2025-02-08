@@ -1,5 +1,6 @@
 #include "base_object.hpp"
 
+#include <fstream>
 #include <iomanip>
 #include <iostream>
 
@@ -66,7 +67,7 @@ sml::BaseObject::updateSpecifications(float time) noexcept
 
     sf::Vector2f result_force = gravity_force.acceleration;
 
-    if (m_collision_context.collision_unit_normal.x != 0 &&
+    if (m_collision_context.collision_unit_normal.x != 0 ||
         m_collision_context.collision_unit_normal.y != 0)
     {
         result_force += sml::forces::counteraction(
@@ -74,7 +75,7 @@ sml::BaseObject::updateSpecifications(float time) noexcept
                             m_collision_context.collision_unit_normal)
                             .acceleration;
 
-        std::cout << result_force.x << '\n' << result_force.y << '\n';
+        // std::cout << result_force.x << '\n' << result_force.y << '\n';
     }
 
     int pixels_per_metr =
@@ -84,47 +85,45 @@ sml::BaseObject::updateSpecifications(float time) noexcept
 
     sf::Vector2f move_vector = m_speed * time;
 
+    if (m_collision_context.collision_unit_normal.x != 0 ||
+        m_collision_context.collision_unit_normal.y != 0)
+    {
+        sf::Vector2f flip_90_degrees_clock_wise_unit_vector = {
+            m_collision_context.collision_unit_normal.y,
+            -m_collision_context.collision_unit_normal.x};
+
+        sf::Vector2f flip_90_degrees_counter_clock_wise_unit_vector = {
+            -m_collision_context.collision_unit_normal.y,
+            m_collision_context.collision_unit_normal.x};
+
+        float vec_cos = utl::CollisionHandler::getCos(
+            m_speed, flip_90_degrees_clock_wise_unit_vector);
+
+        // if (vec_cos > 0)
+        // {
+        //     move_vector = flip_90_degrees_clock_wise_unit_vector * vec_cos *
+        //                   utl::getLength(m_speed);
+        // }
+        // else
+        // {
+        //     move_vector = flip_90_degrees_counter_clock_wise_unit_vector *
+        //                   vec_cos * utl::getLength(m_speed);
+        // }
+    }
     m_collision_context.collision_unit_normal = {0.f, 0.f};
-
-    // if (m_collision_context.collision_unit_normal.x != 0 &&
-    //     m_collision_context.collision_unit_normal.y != 0)
-    // {
-    //     sf::Vector2f flip_90_degrees_clock_wise_unit_vector = {
-    //         m_collision_context.collision_unit_normal.y,
-    //         -m_collision_context.collision_unit_normal.x};
-
-    //     sf::Vector2f flip_90_degrees_counter_clock_wise_unit_vector = {
-    //         -m_collision_context.collision_unit_normal.y,
-    //         m_collision_context.collision_unit_normal.x};
-
-    //     float vec_cos = utl::CollisionHandler::getCos(
-    //         m_speed, flip_90_degrees_clock_wise_unit_vector);
-
-    //     if (vec_cos > 0)
-    //     {
-    //         move_vector = flip_90_degrees_clock_wise_unit_vector * vec_cos *
-    //                       utl::getLength(m_speed);
-    //     }
-    //     else
-    //     {
-    //         move_vector = flip_90_degrees_counter_clock_wise_unit_vector *
-    //                       vec_cos * utl::getLength(m_speed);
-    //     }
-    // }
-
     move(move_vector);
 }
 
-void
-sml::BaseObject::printGlobalBounds()
-{
-    std::cout << "--------------------\n";
-    std::cout << "Left: " << m_global_bounds.left << '\n';
-    std::cout << "Right: " << m_global_bounds.right << '\n';
-    std::cout << "Top: " << m_global_bounds.top << '\n';
-    std::cout << "Bottom: " << m_global_bounds.bottom << '\n';
-    std::cout << "--------------------\n";
-}
+// void
+// sml::BaseObject::printGlobalBounds()
+// {
+//     std::cout << "--------------------\n";
+//     std::cout << "Left: " << m_global_bounds.left << '\n';
+//     std::cout << "Right: " << m_global_bounds.right << '\n';
+//     std::cout << "Top: " << m_global_bounds.top << '\n';
+//     std::cout << "Bottom: " << m_global_bounds.bottom << '\n';
+//     std::cout << "--------------------\n";
+// }
 
 void
 sml::BaseObject::updateSpeed(const sf::Vector2f& normal)
@@ -171,6 +170,32 @@ sml::BaseObject::handleCollision(std::shared_ptr<BaseObject> other,
 
         if (collision_data.has_value())
         {
+            if (utl::getLength(collision_data->allign_vector) > 100.f)
+            {
+                static bool first_time = true;
+
+                if (first_time)
+                {
+
+                    std::cout << collision_data->allign_vector.x << " "
+                              << collision_data->allign_vector.y << '\n';
+
+                    auto check_collision_data =
+                        utl::CollisionHandler::getCollisionData(
+                            this->m_global_points, this->m_speed,
+                            other->m_global_points);
+                    std::ofstream ostream(
+                        "C:/Users/arsbo/source/repos/physics/debug_data.txt");
+
+                    saveData<utl::CollisionHandler::CollisionData>(
+                        ostream, other, check_collision_data.value());
+
+                    first_time = false;
+                }
+
+                // for(int i = 0; i < this->m_global_points.)
+                // ostream <<
+            }
             move(collision_data->allign_vector);
             was_collision = true;
 

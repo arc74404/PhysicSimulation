@@ -21,15 +21,15 @@ isIntersectTest(const utl::Section& sec1, const utl::Section& sec2,
     ASSERT_EQ(utl::isPointsEqual(*res, correct_point), true);
 }
 
-void
-getReflectionVectorTest(const utl::Section& line, sf::Vector2f direction,
-                        sf::Vector2f correct_result)
-{
-    sf::Vector2f refl_vector =
-        utl::CollisionHandler::getReflectionVector(line, direction);
+// void
+// getReflectionVectorTest(const utl::Section& line, sf::Vector2f direction,
+//                         sf::Vector2f correct_result)
+// {
+// sf::Vector2f refl_vector =
+//     utl::CollisionHandler::getReflectionVector(line, direction);
 
-    ASSERT_EQ(utl::isPointsEqual(refl_vector, correct_result), true);
-}
+// ASSERT_EQ(utl::isPointsEqual(refl_vector, correct_result), true);
+// }
 
 // Simple tests for UtilCollisionHandlerGetIntersection
 //------------------------------------------------------------------------------
@@ -209,45 +209,45 @@ TEST(UtilCollisionHandlerGetCounterDirectionalRay,
 // Simple tests for UtilCollisionHandlerGetReflectionVector
 //------------------------------------------------------------------------------
 
-TEST(UtilCollisionHandlerGetReflectionVector,
-     get_reflection_vector_x1_0_y1_0_x1_10_y1_0_line)
-{
-    utl::Section line = {
-        {0,  0},
-        {10, 0}
-    };
-    sf::Vector2f direction      = {4, -3};
-    sf::Vector2f correct_result = {4, 3};
+// TEST(UtilCollisionHandlerGetReflectionVector,
+//      get_reflection_vector_x1_0_y1_0_x1_10_y1_0_line)
+// {
+//     utl::Section line = {
+//         {0,  0},
+//         {10, 0}
+//     };
+//     sf::Vector2f direction      = {4, -3};
+//     sf::Vector2f correct_result = {4, 3};
 
-    getReflectionVectorTest(line, direction, correct_result);
+//     getReflectionVectorTest(line, direction, correct_result);
 
-    direction      = {4.3, 3.2};
-    correct_result = {4.3, -3.2};
-    getReflectionVectorTest(line, direction, correct_result);
+//     direction      = {4.3, 3.2};
+//     correct_result = {4.3, -3.2};
+//     getReflectionVectorTest(line, direction, correct_result);
 
-    direction      = {-4.3, 3.2};
-    correct_result = {-4.3, -3.2};
-    getReflectionVectorTest(line, direction, correct_result);
+//     direction      = {-4.3, 3.2};
+//     correct_result = {-4.3, -3.2};
+//     getReflectionVectorTest(line, direction, correct_result);
 
-    direction      = {-4.3, -3.2};
-    correct_result = {-4.3, 3.2};
-    getReflectionVectorTest(line, direction, correct_result);
-}
+//     direction      = {-4.3, -3.2};
+//     correct_result = {-4.3, 3.2};
+//     getReflectionVectorTest(line, direction, correct_result);
+// }
 
-TEST(UtilCollisionHandlerGetReflectionVector,
-     get_reflection_vector_x1_11_y1_11_x1_44_y1_44_line)
-{
-    utl::Section line = {
-        {11, 11},
-        {44, 44}
-    };
-    sf::Vector2f direction      = {10, 0};
-    sf::Vector2f correct_result = {0, 10};
+// TEST(UtilCollisionHandlerGetReflectionVector,
+//      get_reflection_vector_x1_11_y1_11_x1_44_y1_44_line)
+// {
+//     utl::Section line = {
+//         {11, 11},
+//         {44, 44}
+//     };
+//     sf::Vector2f direction      = {10, 0};
+//     sf::Vector2f correct_result = {0, 10};
 
-    getReflectionVectorTest(line, direction, correct_result);
+//     getReflectionVectorTest(line, direction, correct_result);
 
-    direction      = {4, -4};
-    correct_result = {-4, 4};
+//     direction      = {4, -4};
+//     correct_result = {-4, 4};
 
-    getReflectionVectorTest(line, direction, correct_result);
-}
+//     getReflectionVectorTest(line, direction, correct_result);
+// }

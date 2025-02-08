@@ -14,16 +14,16 @@ utl::CollisionHandler::getCollisionData(const std::vector<Point>& left,
     std::optional<CollisionData> counter_direct_opt;
 
     auto left_handle_direct =
-        getCollisionData(left, left_direction, right, true);
+        getCollisionData(left, left_direction, right, false);
 
     auto right_handle_direct =
-        getCollisionData(right, left_direction, left, false);
+        getCollisionData(right, left_direction, left, true);
 
     auto left_handle_counter_direct =
-        getCollisionData(left, -left_direction, right, true);
+        getCollisionData(left, left_direction, right, true);
 
     auto right_handle_counter_direct =
-        getCollisionData(right, -left_direction, left, false);
+        getCollisionData(right, left_direction, left, false);
 
     sf::Vector2f max_displacement_vector;
 

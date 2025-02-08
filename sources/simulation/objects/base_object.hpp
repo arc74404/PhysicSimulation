@@ -4,6 +4,7 @@
 #include <SFML/System/Vector2.hpp>
 
 #include <cstdarg>
+#include <fstream>
 
 #include "simulation/polygon/polygon.hpp"
 
@@ -16,6 +17,10 @@ using BaseBorderPtr = std::shared_ptr<sml::BaseBorder>;
 
 using Point = sf::Vector2f;
 
+class BaseObject;
+
+using BaseObjectPtr = std::shared_ptr<BaseObject>;
+
 class BaseObject : public Polygon
 {
 public:
@@ -25,11 +30,13 @@ public:
         PATTERN = 1
     };
 
+    template <typename T>
+    void saveData(std::ostream& os, BaseObjectPtr other, T& col_data);
+
+    ///////////
     void setWeight(float w);
 
     explicit BaseObject(FormType upd_status) noexcept;
-
-    void printGlobalBounds();
 
     bool handleCollision(std::shared_ptr<BaseObject> other,
                          bool is_right_const = false) noexcept;
@@ -68,7 +75,23 @@ private:
     FormType m_form_type;
 };
 
-using BaseObjectPtr = std::shared_ptr<BaseObject>;
+template <typename T>
+void
+BaseObject::saveData(std::ostream& os, BaseObjectPtr other, T& col_data)
+{
+    for (auto& i : m_global_points)
+    {
+        os << "{" << i.x << ", " << i.y << "}," << '\n';
+    }
+    os << "---\n";
+    for (auto& i : other->m_global_points)
+    {
+        os << "{" << i.x << ", " << i.y << "}," << '\n';
+    }
+    os << "---\n";
+    os << col_data.allign_vector.x << " " << col_data.allign_vector.y << '\n';
+    os << col_data.unit_normal.x << " " << col_data.unit_normal.y << '\n';
+}
 
 } // namespace sml
 #endif // !BASE_OBJECT_HPP

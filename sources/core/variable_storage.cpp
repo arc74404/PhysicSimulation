@@ -5,7 +5,7 @@ core::VariableStorage::VariableStorage()
     m_floats["points_frequency"]        = 3.f;
     m_floats["acceleration_of_gravity"] = 10.f;
 
-    m_floats["elasticity_coefficient"] = 0.6f;
+    m_floats["elasticity_coefficient"] = 0.4f;
 
     m_ints["pixels_per_metr"] = 50;
 }

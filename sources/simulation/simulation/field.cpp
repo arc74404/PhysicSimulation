@@ -12,7 +12,7 @@ sml::Field::Field()
     //////////////////////////////////////////////////
     co.setCentre({300, -100});
     co.setRadius(50);
-    // m_updatable_objects[1] = std::make_unique<CircleObject>(co);
+    m_updatable_objects[1] = std::make_unique<CircleObject>(co);
     //////////////////////////////////////////////////
     co.setRadius(75);
     co.setCentre({300, 200});
@@ -48,6 +48,16 @@ sml::Field::update(float time)
     auto cb = m_const_objects.begin();
     auto ce = m_const_objects.end();
 
+    std::vector<bool> handled(std::max_element(
+                                  m_updatable_objects.begin(),
+                                  m_updatable_objects.end(),
+                                  [](auto a, auto b) noexcept
+                                  {
+                                      return a.first < b.first;
+                                  })->first +
+                                  1,
+                              false);
+
     for (auto i = ub; i != ue; ++i)
     {
         i.operator*().second->updateSpecifications(time);
@@ -56,17 +66,29 @@ sml::Field::update(float time)
     {
         for (auto j = cb; j != ce; ++j)
         {
-            if (i->second->handleCollision(j->second, true)) break;
+            if (i->second->handleCollision(j->second, true))
+            {
+                handled[i->first] = true;
+                break;
+            }
         }
     }
+
     for (auto i = ub; i != ue; ++i)
     {
+        if (handled[i->first])
+        {
+            continue;
+        }
         auto j = i;
         ++j;
         for (; j != ue; ++j)
         {
-            if (i->second->handleCollision(j->second, true))
+            if (i->second->handleCollision(j->second, false))
             {
+                handled[i->first] = true;
+                handled[j->first] = true;
+
                 i = ub;
             }
         }
